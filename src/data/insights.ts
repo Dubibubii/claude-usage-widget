@@ -91,6 +91,75 @@ export function sdkPaceEmptyOn(
   return emptyAt < r ? new Date(emptyAt) : null;
 }
 
+// ---------- avoidable-spend estimate (the report's headline) ----------
+
+export interface SavingsEstimate {
+  monthCostUsd: number;
+  /** leaner output (measured ~11% from mechanical terseness rules) */
+  outputLowUsd: number;
+  outputHighUsd: number;
+  /** lifting cache-read share to ~90% of prompt-side tokens */
+  cacheUsd: number;
+  /** routing 10–25% of large-model work to a small model (~10× cheaper) */
+  routingLowUsd: number;
+  routingHighUsd: number;
+  totalLowUsd: number;
+  totalHighUsd: number;
+}
+
+/** Relative per-token price weights (stable across Anthropic model tiers):
+ * output ≈ 5× input, cache reads ≈ 0.1×, cache writes ≈ 1.25×. Used to
+ * allocate a day's known total cost across token classes. */
+const PRICE_W = { input: 1, output: 5, cacheRead: 0.1, cacheWrite: 1.25 };
+
+/** Estimate the avoidable share of the period's cost across the three
+ * playbook levers. Honest by construction: allocation preserves each day's
+ * real total, levers use stated assumptions (ranges, not points), and the
+ * result is an API-equivalent figure — on flat-rate plans it reads as freed
+ * limit headroom, not refunds. null when there's nothing meaningful (<$1). */
+export function estimateSavings(days: DayUsage[]): SavingsEstimate | null {
+  let monthCost = 0;
+  let outputCost = 0;
+  let cacheSave = 0;
+  let largeUsd = 0;
+  for (const d of days) {
+    const t = d.tokens;
+    const wsum =
+      t.input * PRICE_W.input +
+      t.output * PRICE_W.output +
+      t.cacheRead * PRICE_W.cacheRead +
+      t.cacheWrite * PRICE_W.cacheWrite;
+    if (wsum <= 0 || d.costUsd <= 0) continue;
+    monthCost += d.costUsd;
+    const inputCost = (d.costUsd * t.input * PRICE_W.input) / wsum;
+    outputCost += (d.costUsd * t.output * PRICE_W.output) / wsum;
+    // cache lever: tokens that would move from cold input to cache reads if
+    // the read share reached 90% of prompt-side (reads cost 0.1× input)
+    const prompt = t.input + t.cacheRead + t.cacheWrite;
+    const moved = Math.min(t.input, Math.max(0, 0.9 * prompt - t.cacheRead));
+    if (t.input > 0) cacheSave += 0.9 * inputCost * (moved / t.input);
+    for (const m of d.byModel) {
+      if (m.usd !== undefined && !m.model.includes("haiku")) largeUsd += m.usd;
+    }
+  }
+  if (monthCost < 1) return null;
+  const r = (v: number) => Math.round(v * 100) / 100;
+  const outputLow = 0.05 * outputCost; // conservative adoption
+  const outputHigh = 0.11 * outputCost; // measured ~10.7% from terseness rules
+  const routingLow = 0.1 * largeUsd * 0.9; // small models ≈ 10× cheaper
+  const routingHigh = 0.25 * largeUsd * 0.9;
+  return {
+    monthCostUsd: r(monthCost),
+    outputLowUsd: r(outputLow),
+    outputHighUsd: r(outputHigh),
+    cacheUsd: r(cacheSave),
+    routingLowUsd: r(routingLow),
+    routingHighUsd: r(routingHigh),
+    totalLowUsd: r(outputLow + 0.5 * cacheSave + routingLow),
+    totalHighUsd: r(outputHigh + cacheSave + routingHigh),
+  };
+}
+
 /** Weekly-% climb per day from observed daily peaks: slope between the
  * oldest and newest observation in the last `window` days. null when fewer
  * than 2 observations, when flat (<1%/day — absence means "stable"), or

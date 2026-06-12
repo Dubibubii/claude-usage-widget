@@ -14,6 +14,7 @@ import type { SetupState } from "../state/types";
 import { PLAN_SDK_POOL } from "../state/types";
 import type { DayUsage, LocalUsage } from "../data/scanCore";
 import { dailyPeaks } from "../data/source";
+import { estimateSavings } from "../data/insights";
 import { fmtTokens } from "../data/format";
 import { isTauri, nativeLogMeta, nativeWriteLog } from "../platform/native";
 
@@ -81,21 +82,28 @@ function dayBlock(day: DayUsage, peaks: { w?: number; s?: number } | undefined):
   return lines;
 }
 
-/** Honest counterfactual, not a behavior claim: states the large-model cost
- * and what routing a slice of it to a small model would save (small models
- * run ~10× cheaper, so a 10% slice saves ≈ 9% of the large-model cost). */
-function haikuSavingsLine(days: DayUsage[]): string | null {
-  let largeUsd = 0;
-  for (const d of days) {
-    for (const m of d.byModel) {
-      if (m.usd !== undefined && !prettyModel(m.model).startsWith("haiku")) {
-        largeUsd += m.usd;
-      }
-    }
-  }
-  if (largeUsd < 1) return null;
-  const saved = largeUsd * 0.09;
-  return `- large-model cost $${largeUsd.toFixed(2)} — routing 10% of that work to a small model saves ≈ $${saved.toFixed(2)}/mo (est.; see the model-routing skill)`;
+/** The motivating headline: what this month's avoidable spend looks like,
+ * with every assumption stated so the analyzing AI can verify the math.
+ * estimateSavings (insights.ts) allocates each day's REAL cost across token
+ * classes by price weights — nothing here is invented, only counterfactual. */
+function savingsSection(days: DayUsage[]): string[] {
+  const s = estimateSavings(days);
+  if (!s) return [];
+  const usd = (v: number) => `$${v.toFixed(2)}`;
+  return [
+    `## 💰 Potential savings this month (est.)`,
+    ``,
+    `**≈ ${usd(s.totalLowUsd)}–${usd(s.totalHighUsd)} of this month's ${usd(s.monthCostUsd)} cost-equivalent was avoidable.**`,
+    ``,
+    `| Lever | Est. savings | Assumption |`,
+    `|---|---|---|`,
+    `| Leaner output (diffs over prose, ≤5-line answers) | ${usd(s.outputLowUsd)}–${usd(s.outputHighUsd)} | 5–11% output reduction; the 11% was measured from mechanical terseness rules |`,
+    `| Cache hygiene (lift cache-read share to ~90%) | up to ${usd(s.cacheUsd)} | cold input tokens repriced as cache reads (0.1×); 50% adoption in the low total |`,
+    `| Model routing (chores → small model) | ${usd(s.routingLowUsd)}–${usd(s.routingHighUsd)} | 10–25% of large-model work routed, small models ≈10× cheaper |`,
+    ``,
+    `Cost split per day is allocated from real totals by price weights (output 5×, cache-read 0.1×, cache-write 1.25× vs input). On a flat-rate plan these $ are API-equivalent value — read them as freed limit headroom, not refunds.`,
+    ``,
+  ];
 }
 
 /** The whole current-month file, newest day first. */
@@ -125,6 +133,8 @@ export function buildMonthlyReport(
     `or, for a quick weekly check-in:`,
     `> Look at my last 7 days in this report. What are the 3 highest-impact changes I should make on Monday to cut my token use ~20%? Rank by effort, use my real numbers.`,
     ``,
+    `Either way, the analysis brief near the bottom tells the AI exactly how to answer — savings first.`,
+    ``,
   ];
 
   if (days.length === 0) {
@@ -142,15 +152,15 @@ export function buildMonthlyReport(
       }),
       { tokens: 0, cost: 0, read: 0, prompt: 0, requests: 0, sdkUsd: 0 },
     );
+    L.push(...savingsSection(days));
     const busiest = days.reduce((a, b) => (b.totalTokens > a.totalTokens ? b : a));
     L.push(
       `## Month so far`,
       `- tokens ${fmtTokens(tot.tokens)} · cost-equiv $${tot.cost.toFixed(2)} · requests ${tot.requests} · cache-read share ${pct(tot.read, tot.prompt)}%`,
       `- busiest day ${busiest.date} (${fmtTokens(busiest.totalTokens)}) · agent-sdk $${tot.sdkUsd.toFixed(2)}`,
+      ``,
+      `## Daily log`,
     );
-    const haiku = haikuSavingsLine(days);
-    if (haiku) L.push(haiku);
-    L.push(``, `## Daily log`);
     for (const day of [...days].reverse()) {
       L.push(``, ...dayBlock(day, peaks[day.date]));
     }
@@ -158,14 +168,16 @@ export function buildMonthlyReport(
   }
 
   L.push(
-    `## For Claude — what to analyze`,
-    `- Cache efficiency: a low cache-read share (under ~70%) means context is re-sent cold; diagnose which habit is breaking it.`,
-    `- Model mix: flag days where a heavy model dominates work a lighter model could do (and the reverse — false economy).`,
-    `- Output/input balance and requests-per-session: many small turns burn cache writes; high output days mean over-explaining.`,
-    `- Projects with outsized usage: name them and ask what those sessions do; suggest scoping context or splitting work.`,
-    `- Limit pacing: 5h-session peaks near 100% mean badly timed bursts; suggest spreading work across windows.`,
-    `- Diagnose before prescribing: only recommend levers this data actually supports — don't recite the whole playbook.`,
-    `- Be concrete: per suggestion, estimate the token impact using the numbers above, and ground it in the playbook below.`,
+    `## For the AI reading this — analysis brief`,
+    ``,
+    `Act as a token-efficiency coach. Use ONLY the data in this report. Respond in exactly this structure:`,
+    ``,
+    `1. **The number first.** Your very first line — before any heading — is: "You could have saved ≈ $___–$___ this month." filled with your verified range. To verify: internal consistency counts (check the lever table sums to the headline; back-solve cost bases from the daily log) — you don't have per-model prices, so bottom-up repricing isn't expected.`,
+    `2. **Diagnosis.** Rank the three levers — leaner output · cache hygiene · model routing — by this user's gap vs the playbook below. Cite specific days and values: low cache-read days, output-heavy days, large-model-dominated days, requests-per-session churn, project concentration, and limit peaks near 100% (if the log records them).`,
+    `3. **Prescriptions.** The top 3 habit changes ranked by estimated $ impact. For each: the concrete change, the playbook lever it implements, and roughly what share of the savings it captures. If a lever OUTSIDE the three (e.g. compact discipline) shows a bigger gap in this data, say so and rank it in.`,
+    `4. **Next week's experiment.** One single change, plus the exact number in next month's report that should move if it works.`,
+    ``,
+    `Rules: recommend only levers this data supports — don't recite the whole playbook. Ranges over false precision; say when data is insufficient. The user's plan is flat-rate, so frame $ as API-equivalent value of freed limit headroom, not refunds. Keep the entire response under 450 words — this is a token-efficiency report; model the behavior.`,
     ``,
     `## Token playbook — the levers behind your suggestions`,
     `- Context diet: CLAUDE.md stays under ~60 lines (it is re-sent every session); reference file paths instead of pasting files; summarize logs to the failing lines; one task per session.`,

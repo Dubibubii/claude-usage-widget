@@ -3,6 +3,7 @@
 import { describe, expect, test } from "bun:test";
 import type { DayUsage } from "./scanCore";
 import {
+  estimateSavings,
   cacheReadPct14d,
   cycleDay,
   heavyProject14d,
@@ -121,5 +122,58 @@ describe("weeklyTrendPerDay", () => {
   test("fewer than 2 observations → null", () => {
     expect(weeklyTrendPerDay({ "2026-06-11": { w: 20 } }, NOW)).toBeNull();
     expect(weeklyTrendPerDay({}, NOW)).toBeNull();
+  });
+});
+
+describe("estimateSavings", () => {
+  function costDay(date: string, costUsd: number): DayUsage {
+    return {
+      date,
+      tokens: { input: 100_000, output: 100_000, cacheRead: 700_000, cacheWrite: 100_000 },
+      totalTokens: 1_000_000,
+      costUsd,
+      requests: 50,
+      sessions: 3,
+      byModel: [],
+      byProject: [["proj", 1_000_000]].map(([project, tokens]) => ({ project: project as string, tokens: tokens as number })),
+      sdk: { tokens: 0, usd: 0 },
+    };
+  }
+
+  test("allocates day cost by price weights and computes the three levers", () => {
+    // weights: 100K·1 + 100K·5 + 700K·0.1 + 100K·1.25 = 795K
+    // inputCost = 100K/795K ≈ $0.1258 · outputCost = 500K/795K ≈ $0.6289
+    // cache: 0.9×900K prompt = 810K − 700K read = 110K → capped at 100K input
+    //   → save 0.9 × inputCost ≈ $0.1132
+    const s = estimateSavings([costDay("2026-06-10", 1)]);
+    expect(s).not.toBeNull();
+    expect(s!.monthCostUsd).toBe(1);
+    expect(s!.outputHighUsd).toBeCloseTo(0.11 * 0.6289, 2);
+    expect(s!.cacheUsd).toBeCloseTo(0.1132, 2);
+    expect(s!.routingLowUsd).toBe(0); // no per-model usd in fixture
+    expect(s!.totalHighUsd).toBeCloseTo(0.11 * 0.6289 + 0.1132, 2);
+  });
+
+  test("already-optimal cache (read share ≥ 90%) saves nothing on that lever", () => {
+    const d = costDay("2026-06-10", 10);
+    d.tokens = { input: 50_000, output: 100_000, cacheRead: 950_000, cacheWrite: 0 };
+    const s = estimateSavings([d]);
+    expect(s!.cacheUsd).toBe(0);
+  });
+
+  test("routing lever uses non-haiku usd only", () => {
+    const d = costDay("2026-06-10", 42);
+    d.byModel = [
+      { model: "claude-opus-4-8[1m]", tokens: 1, usd: 40 },
+      { model: "claude-haiku-4-5-20251001", tokens: 1, usd: 2 },
+    ];
+    const s = estimateSavings([d]);
+    expect(s!.routingLowUsd).toBeCloseTo(3.6, 2); // 10% × 40 × 0.9
+    expect(s!.routingHighUsd).toBeCloseTo(9.0, 2);
+  });
+
+  test("null when the period is too small to matter (<$1)", () => {
+    expect(estimateSavings([costDay("2026-06-10", 0.5)])).toBeNull();
+    expect(estimateSavings([])).toBeNull();
   });
 });

@@ -134,22 +134,39 @@ describe("buildMonthlyReport — empty month", () => {
   });
 });
 
-describe("haiku-savings line (month rollup)", () => {
-  test("absent when byModel entries carry no usd (fixture-style data)", () => {
+describe("savings headline + analysis brief", () => {
+  test("savings section present with month data, leads the report body", () => {
     const report = buildMonthlyReport(SETUP, FIXTURE, NOW);
-    expect(report).not.toContain("large-model cost");
+    expect(report).toContain("## 💰 Potential savings this month (est.)");
+    expect(report).toContain("was avoidable");
+    // headline must come BEFORE the daily log
+    expect(report.indexOf("Potential savings")).toBeLessThan(report.indexOf("## Daily log"));
   });
 
-  test("present and arithmetically right when usd is known", () => {
+  test("routing lever picks up per-model usd when present", () => {
     const d = day("2026-06-10", 1_000_000, 0);
+    d.costUsd = 42;
     d.byModel = [
       { model: "claude-opus-4-8[1m]", tokens: 600_000, usd: 40 },
       { model: "claude-haiku-4-5-20251001", tokens: 400_000, usd: 2 },
     ];
     const report = buildMonthlyReport(SETUP, usage([d]), NOW);
-    // large (non-haiku) cost = $40 → 10% routed ≈ $3.60 saved
-    expect(report).toContain("large-model cost $40.00");
-    expect(report).toContain("saves ≈ $3.60/mo");
+    // routing: 10% of $40 × 0.9 = $3.60 low · 25% × 0.9 = $9.00 high
+    expect(report).toContain("$3.60–$9.00");
+  });
+
+  test("analysis brief instructs savings-first structured response", () => {
+    const report = buildMonthlyReport(SETUP, FIXTURE, NOW);
+    expect(report).toContain("## For the AI reading this — analysis brief");
+    expect(report).toContain('"You could have saved ≈ $___–$___ this month."');
+    expect(report).toContain("under 450 words");
+    expect(report).toContain("freed limit headroom, not refunds");
+  });
+
+  test("empty month: no savings section, brief still present", () => {
+    const report = buildMonthlyReport(SETUP, usage([]), NOW);
+    expect(report).not.toContain("Potential savings");
+    expect(report).toContain("## For the AI reading this — analysis brief");
   });
 });
 
