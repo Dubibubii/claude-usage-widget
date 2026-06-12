@@ -1,0 +1,65 @@
+# Builds installers for every platform on tag push (v*) and attaches them to
+# a GitHub Release: macOS .dmg (Apple Silicon + Intel) and Windows .exe (NSIS).
+#
+# Code signing (optional, recommended later):
+#  - macOS: set APPLE_CERTIFICATE / APPLE_CERTIFICATE_PASSWORD / APPLE_SIGNING_IDENTITY
+#    + APPLE_ID / APPLE_PASSWORD / APPLE_TEAM_ID secrets and tauri-action notarizes.
+#    Unsigned builds work but Gatekeeper requires right-click → Open on first launch.
+#  - Windows: unsigned shows SmartScreen warning; users click "More info → Run anyway".
+
+name: release
+on:
+  push:
+    tags: ["v*"]
+
+jobs:
+  build:
+    permissions:
+      contents: write
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - platform: macos-latest
+            args: "--target aarch64-apple-darwin"
+          - platform: macos-latest
+            args: "--target x86_64-apple-darwin"
+          - platform: windows-latest
+            args: ""
+    runs-on: ${{ matrix.platform }}
+    env:
+      # secrets can't appear in `if:` directly — surface presence as env
+      HAS_THEMES_TOKEN: ${{ secrets.THEMES_PRO_TOKEN != '' }}
+    steps:
+      - uses: actions/checkout@v4
+
+      # Official builds bundle the paid theme pack (license-gated at runtime).
+      # Forks without the secret still build fine — Glass + Ring fallback.
+      - name: Checkout paid themes (official builds only)
+        if: env.HAS_THEMES_TOKEN == 'true'
+        uses: actions/checkout@v4
+        with:
+          repository: Dubibubii/usage-widget-themes-pro
+          token: ${{ secrets.THEMES_PRO_TOKEN }}
+          path: src/paid
+
+      - uses: oven-sh/setup-bun@v2
+
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: aarch64-apple-darwin,x86_64-apple-darwin
+
+      - uses: swatinem/rust-cache@v2
+        with:
+          workspaces: src-tauri
+
+      - run: bun install
+
+      - uses: tauri-apps/tauri-action@v0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tagName: ${{ github.ref_name }}
+          releaseName: "Claude Usage Widget ${{ github.ref_name }}"
+          releaseDraft: true
+          args: ${{ matrix.args }}

@@ -1,0 +1,11 @@
+name = "usage-widget-license"
+main = "worker.js"
+compatibility_date = "2026-06-01"
+
+[vars]
+# Stripe price the entitlement checks against — LIVE price (test price for
+# staging was price_1TgzJfEAKze6AhcJYS6Gv6kx)
+PRICE_ID = "price_1Th2WOE52OWhfRnYwfjvllxg"
+
+# Secrets (set via `wrangler secret put`):
+#   STRIPE_SECRET_KEY

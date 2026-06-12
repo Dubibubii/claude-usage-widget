@@ -1,0 +1,14 @@
+node_modules
+dist
+src-tauri/target
+.DS_Store
+*.local
+# The user's real usage log/exports must never be committed
+claude-usage.md
+
+# PAID CONTENT — lives in the private themes repository (open-core boundary).
+# Official release builds check it out into src/paid/ before bundling.
+src/paid/
+
+# local secrets
+.env*

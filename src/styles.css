@@ -1,0 +1,196 @@
+/* Base + motion. All dimensions/timings from the Glass Instrument spec.
+   Color crossfade (theme/skin change): 300ms on color properties only —
+   never animate blur (spec §Theme System). */
+
+@property --pct {
+  syntax: "<percentage>";
+  inherits: false;
+  initial-value: 0%;
+}
+
+* {
+  box-sizing: border-box;
+  -webkit-font-smoothing: antialiased;
+  user-select: none;
+}
+
+html,
+body,
+#root {
+  margin: 0;
+  height: 100%;
+  background: transparent;
+  font-family: "Instrument Sans", sans-serif;
+}
+
+.mono {
+  font-family: "JetBrains Mono", monospace;
+}
+
+/* 300ms theme crossfade — color properties only */
+.theme-anim,
+.theme-anim * {
+  transition-property: background-color, color, border-color, box-shadow, fill, stroke;
+  transition-duration: 300ms;
+  transition-timing-function: ease;
+}
+
+/* conic ring — fill animates 400ms ease-out (spec motion table) */
+.ring {
+  position: relative;
+  border-radius: 50%;
+  transition: --pct 400ms ease-out, background-color 300ms ease, box-shadow 300ms ease;
+}
+.ring > .hole {
+  position: absolute;
+  border-radius: 50%;
+}
+
+/* 4px progress bars — width animates 400ms ease-out */
+.bar-track {
+  height: 4px;
+  border-radius: 2px;
+  overflow: hidden;
+}
+.bar-fill {
+  height: 100%;
+  border-radius: 2px;
+  transition: width 400ms ease-out, background-color 300ms ease, box-shadow 300ms ease;
+}
+
+/* pill ring add/remove — width 200ms ease-out */
+.ring-slot {
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+  transition: width 200ms ease-out, opacity 200ms ease-out;
+}
+
+/* expand/collapse: 240ms in / 200ms out, cubic-bezier(0.32,0.72,0,1),
+   transform-origin = pinned corner (set inline) */
+.panel-pop {
+  opacity: 0;
+  transform: scale(0.92);
+}
+.panel-pop.open {
+  opacity: 1;
+  transform: scale(1);
+  transition: transform 240ms cubic-bezier(0.32, 0.72, 0, 1), opacity 240ms cubic-bezier(0.32, 0.72, 0, 1);
+}
+.panel-pop.closing {
+  opacity: 0;
+  transform: scale(0.92);
+  transition: transform 200ms cubic-bezier(0.32, 0.72, 0, 1), opacity 200ms cubic-bezier(0.32, 0.72, 0, 1);
+}
+
+/* pill crossfade vs panel: out 120ms */
+.pill-fade {
+  transition: opacity 120ms ease;
+}
+
+/* carousel: 200ms horizontal slide */
+.carousel-track {
+  display: flex;
+  width: 200%;
+  transition: transform 200ms ease-out;
+}
+.carousel-page {
+  width: 50%;
+  flex-shrink: 0;
+}
+
+/* tab segment highlight 150ms */
+.tab-seg {
+  transition: background-color 150ms ease, color 150ms ease;
+}
+
+/* generic 150ms hover transitions */
+.hov {
+  transition: background-color 150ms ease, color 150ms ease, border-color 150ms ease,
+    transform 150ms ease, opacity 150ms ease;
+}
+
+/* corner snap handled in JS with left/top transition 180ms ease-out */
+.snap-anim {
+  transition: left 180ms ease-out, top 180ms ease-out;
+}
+
+/* ghost corner targets fade in 120ms */
+.ghost-target {
+  opacity: 0;
+  transition: opacity 120ms ease;
+}
+.ghost-target.show {
+  opacity: 1;
+}
+
+/* setup card scale-out 200ms; pill spawn = expand curve in reverse */
+.setup-pop {
+  opacity: 1;
+  transform: scale(1);
+  transition: transform 200ms cubic-bezier(0.32, 0.72, 0, 1), opacity 200ms ease;
+}
+.setup-pop.leaving {
+  opacity: 0;
+  transform: scale(0.92);
+}
+.spawn-in {
+  animation: spawnIn 240ms cubic-bezier(0.32, 0.72, 0, 1);
+}
+@keyframes spawnIn {
+  from {
+    opacity: 0;
+    transform: scale(0.92);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* edit drag */
+.edit-row-dragging {
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+  transform: scale(1.02);
+}
+
+/* slim scrollbar for panel content overflow (Theme tab etc.) */
+.panel-content::-webkit-scrollbar {
+  width: 4px;
+}
+.panel-content::-webkit-scrollbar-thumb {
+  background: var(--hov-bg);
+  border-radius: 2px;
+}
+.panel-content::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+/* hover styles driven by theme CSS vars set on the widget root */
+.icon-btn:hover {
+  background: var(--hov-bg);
+}
+.accent-hover:hover {
+  color: var(--accent-text-c) !important;
+}
+.skill-row:hover {
+  border-color: var(--row-hover-c) !important;
+}
+.chip:hover {
+  border-color: var(--accent-text-c) !important;
+  color: var(--accent-text-c) !important;
+}
+.cta:hover {
+  transform: translateY(-1px);
+}
+
+select {
+  font-family: inherit;
+  appearance: none;
+  -webkit-appearance: none;
+  background: transparent;
+  cursor: pointer;
+}
+select:focus {
+  outline: none;
+}

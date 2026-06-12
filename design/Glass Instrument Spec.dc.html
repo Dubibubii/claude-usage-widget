@@ -1,0 +1,936 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com"></link>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous"></link>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;600;700&amp;display=swap" rel="stylesheet"></link>
+<style>
+  body { margin: 0; background: #161618; }
+</style>
+</helmet>
+
+<div style="font-family: 'Instrument Sans', sans-serif; color: #ECECEA; padding: 56px 64px 120px; max-width: 1320px; margin: 0 auto;" data-screen-label="Glass Instrument Spec">
+
+  <!-- ============ HEADER ============ -->
+  <div style="margin-bottom: 52px;">
+    <div style="font-size: 12px; letter-spacing: 3px; text-transform: uppercase; color: rgba(236,236,234,0.4);">Build spec · Glass Instrument only</div>
+    <h1 style="font-size: 40px; margin: 10px 0 10px; font-weight: 700; letter-spacing: -0.5px;">Claude usage widget — Glass Instrument</h1>
+    <div style="font-size: 16px; max-width: 780px; line-height: 1.55; color: rgba(236,236,234,0.6);">One design, two themes. <b style="color:#ECECEA;">Dark Glass</b> and <b style="color:#ECECEA;">Light Glass</b> swap automatically with the OS appearance (300ms crossfade; time-based fallback 07:00–19:00 light). Default collapsed state shows <b style="color:#ECECEA;">one ring — the worst enabled meter</b>. Panels in §2 are fully interactive. Read with the README in the handoff bundle; every number here is final.</div>
+  </div>
+
+  <!-- ============ S1 · COLLAPSED PILL STATES ============ -->
+  <div data-screen-label="S1 Collapsed states" style="margin-bottom: 72px;">
+    <div style="display: flex; align-items: baseline; gap: 16px; margin-bottom: 6px;">
+      <div style="font-size: 13px; font-weight: 700; letter-spacing: 2px; color: #FF8F6B;">§1</div>
+      <div style="font-size: 24px; font-weight: 700;">Collapsed pill — every state</div>
+    </div>
+    <div style="font-size: 13px; color: rgba(236,236,234,0.45); margin-bottom: 20px;">Capsule · height 38px · padding 9/16/9/12 · gap 10 · rings 20px (hole inset 4px) · % numeral JetBrains Mono 13/600 · click = expand · drag = move</div>
+
+    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px;">
+
+      <!-- F1 default dark -->
+      <div>
+        <div style="border-radius: 16px; padding: 34px 20px; background: radial-gradient(circle at 20% 0%, #2B3040 0%, #16181F 55%, #101116 100%); display: grid; place-items: center;">
+          <div style="display: flex; align-items: center; gap: 10px; padding: 9px 16px 9px 12px; border-radius: 999px; background: rgba(28,30,38,0.85); border: 1px solid rgba(255,255,255,0.12); box-shadow: 0 12px 32px rgba(0,0,0,0.45), inset 0 1px 0 rgba(255,255,255,0.08); backdrop-filter: blur(12px); cursor: pointer;">
+            <div style="position: relative; width: 20px; height: 20px; border-radius: 50%; background: conic-gradient(#FF8F6B 0 81%, rgba(255,255,255,0.1) 81% 100%); box-shadow: 0 0 10px rgba(255,143,107,0.35);"><div style="position: absolute; inset: 4px; border-radius: 50%; background: #1D1F26;"></div></div>
+            <div style="font-family: 'JetBrains Mono', monospace; font-size: 13px; font-weight: 600; color: #FF8F6B;">81%</div>
+          </div>
+        </div>
+        <div style="font-size: 13px; font-weight: 600; margin: 10px 0 3px;">1a · Default — dark</div>
+        <div style="font-size: 12px; color: rgba(236,236,234,0.5); line-height: 1.55;">ONE ring = worst enabled meter (highest %), auto-selected. Numeral = same meter. Hot (≥75%): accent #FF8F6B + glow 0 0 10px rgba(255,143,107,0.35).</div>
+      </div>
+
+      <!-- F2 default light -->
+      <div>
+        <div style="position: relative; overflow: hidden; border-radius: 16px; padding: 34px 20px; background: radial-gradient(circle at 20% 0%, #F4F6FA 0%, #E0E4EC 50%, #CDD2DE 100%); display: grid; place-items: center;">
+          <div style="position: absolute; left: -10%; top: -40%; width: 220px; height: 220px; border-radius: 50%; background: radial-gradient(circle, rgba(91,124,250,0.5) 0%, rgba(91,124,250,0) 70%); filter: blur(8px); pointer-events: none;"></div>
+          <div style="position: absolute; right: -8%; bottom: -45%; width: 240px; height: 240px; border-radius: 50%; background: radial-gradient(circle, rgba(224,106,67,0.5) 0%, rgba(224,106,67,0) 70%); filter: blur(8px); pointer-events: none;"></div>
+          <div style="position: relative; display: flex; align-items: center; gap: 10px; padding: 9px 16px 9px 12px; border-radius: 999px; background: rgba(255,255,255,0.42); border: 1px solid rgba(255,255,255,0.7); box-shadow: 0 12px 32px rgba(28,30,38,0.2), inset 0 1px 0 rgba(255,255,255,0.9); backdrop-filter: blur(18px) saturate(1.6); cursor: pointer;">
+            <div style="position: relative; width: 20px; height: 20px; border-radius: 50%; background: conic-gradient(#E06A43 0 81%, rgba(28,30,38,0.1) 81% 100%); box-shadow: 0 0 10px rgba(224,106,67,0.3);"><div style="position: absolute; inset: 4px; border-radius: 50%; background: #FBFBFD;"></div></div>
+            <div style="font-family: 'JetBrains Mono', monospace; font-size: 13px; font-weight: 600; color: #D45A33;">81%</div>
+          </div>
+        </div>
+        <div style="font-size: 13px; font-weight: 600; margin: 10px 0 3px;">1b · Default — light</div>
+        <div style="font-size: 12px; color: rgba(236,236,234,0.5); line-height: 1.55;">Same anatomy, light tokens: bg rgba(255,255,255,0.42), border rgba(255,255,255,0.7), blur(18px) saturate(1.6). Accent fill #E06A43, accent text #D45A33. In production the OS vibrancy material provides the see-through; blobs here are demo scenery.</div>
+      </div>
+
+      <!-- F3 calm -->
+      <div>
+        <div style="border-radius: 16px; padding: 34px 20px; background: radial-gradient(circle at 20% 0%, #2B3040 0%, #16181F 55%, #101116 100%); display: grid; place-items: center;">
+          <div style="display: flex; align-items: center; gap: 10px; padding: 9px 16px 9px 12px; border-radius: 999px; background: rgba(28,30,38,0.85); border: 1px solid rgba(255,255,255,0.12); box-shadow: 0 12px 32px rgba(0,0,0,0.45), inset 0 1px 0 rgba(255,255,255,0.08); cursor: pointer;">
+            <div style="position: relative; width: 20px; height: 20px; border-radius: 50%; background: conic-gradient(#9BA3B5 0 62%, rgba(255,255,255,0.1) 62% 100%);"><div style="position: absolute; inset: 4px; border-radius: 50%; background: #1D1F26;"></div></div>
+            <div style="font-family: 'JetBrains Mono', monospace; font-size: 13px; font-weight: 600; color: #F0F0EE;">62%</div>
+          </div>
+        </div>
+        <div style="font-size: 13px; font-weight: 600; margin: 10px 0 3px;">1c · Calm (&lt;75%)</div>
+        <div style="font-size: 12px; color: rgba(236,236,234,0.5); line-height: 1.55;">Worst meter under 75%: neutral ring #9BA3B5 (light: #7A8294), NO glow, numeral in text-primary. Meter-type colors only apply in multi-ring mode; the single auto ring is neutral/accent by heat.</div>
+      </div>
+
+      <!-- F4 multi-ring -->
+      <div>
+        <div style="border-radius: 16px; padding: 34px 20px; background: radial-gradient(circle at 20% 0%, #2B3040 0%, #16181F 55%, #101116 100%); display: grid; place-items: center;">
+          <div style="display: flex; align-items: center; gap: 10px; padding: 9px 16px 9px 12px; border-radius: 999px; background: rgba(28,30,38,0.85); border: 1px solid rgba(255,255,255,0.12); box-shadow: 0 12px 32px rgba(0,0,0,0.45), inset 0 1px 0 rgba(255,255,255,0.08); cursor: pointer;">
+            <div style="position: relative; width: 20px; height: 20px; border-radius: 50%; background: conic-gradient(#9BA3B5 0 62%, rgba(255,255,255,0.1) 62% 100%);"><div style="position: absolute; inset: 4px; border-radius: 50%; background: #1D1F26;"></div></div>
+            <div style="position: relative; width: 20px; height: 20px; border-radius: 50%; background: conic-gradient(#FF8F6B 0 81%, rgba(255,255,255,0.1) 81% 100%); box-shadow: 0 0 10px rgba(255,143,107,0.35);"><div style="position: absolute; inset: 4px; border-radius: 50%; background: #1D1F26;"></div></div>
+            <div style="position: relative; width: 20px; height: 20px; border-radius: 50%; background: conic-gradient(#6BD9A8 0 24%, rgba(255,255,255,0.1) 24% 100%);"><div style="position: absolute; inset: 4px; border-radius: 50%; background: #1D1F26;"></div></div>
+            <div style="font-family: 'JetBrains Mono', monospace; font-size: 13px; font-weight: 600; color: #FF8F6B;">81%</div>
+          </div>
+        </div>
+        <div style="font-size: 13px; font-weight: 600; margin: 10px 0 3px;">1d · Multi-ring (opt-in via Edit)</div>
+        <div style="font-size: 12px; color: rgba(236,236,234,0.5); line-height: 1.55;">Each meter row in Edit has a ◎ "show in pill" toggle. Pinned meters render in row order, max 5. Type colors: session #9BA3B5 · weekly accent · SDK #6BD9A8. Numeral still = worst pinned. Zero pinned → auto single-ring (1a).</div>
+      </div>
+
+      <!-- F5 tooltip -->
+      <div>
+        <div style="border-radius: 16px; padding: 22px 20px; background: radial-gradient(circle at 20% 0%, #2B3040 0%, #16181F 55%, #101116 100%); display: flex; flex-direction: column; align-items: center; gap: 8px;">
+          <div style="display: flex; align-items: center; gap: 10px; padding: 9px 16px 9px 12px; border-radius: 999px; background: rgba(28,30,38,0.85); border: 1px solid rgba(255,255,255,0.25); box-shadow: 0 12px 32px rgba(0,0,0,0.45), inset 0 1px 0 rgba(255,255,255,0.08); cursor: pointer;">
+            <div style="position: relative; width: 20px; height: 20px; border-radius: 50%; background: conic-gradient(#FF8F6B 0 81%, rgba(255,255,255,0.1) 81% 100%); box-shadow: 0 0 10px rgba(255,143,107,0.35);"><div style="position: absolute; inset: 4px; border-radius: 50%; background: #1D1F26;"></div></div>
+            <div style="font-family: 'JetBrains Mono', monospace; font-size: 13px; font-weight: 600; color: #FF8F6B;">81%</div>
+          </div>
+          <div style="border-radius: 10px; background: rgba(24,26,33,0.95); border: 1px solid rgba(255,255,255,0.12); box-shadow: 0 12px 32px rgba(0,0,0,0.5); padding: 9px 12px; display: flex; flex-direction: column; gap: 5px; font-size: 11px; color: rgba(255,255,255,0.75);">
+            <div>Session <b style="font-family:'JetBrains Mono',monospace;">62%</b> · resets in 1h 48m</div>
+            <div style="color: #FF8F6B;">Weekly <b style="font-family:'JetBrains Mono',monospace;">81%</b> · resets Thu 9:00am</div>
+            <div>SDK <b style="font-family:'JetBrains Mono',monospace;">$12/$50</b> · restarts Jul 3</div>
+          </div>
+        </div>
+        <div style="font-size: 13px; font-weight: 600; margin: 10px 0 3px;">1e · Hover tooltip</div>
+        <div style="font-size: 12px; color: rgba(236,236,234,0.5); line-height: 1.55;">600ms hover delay. One line per ENABLED meter, hot lines in accent. Border brightens to rgba(255,255,255,0.25) (light: rgba(28,30,38,0.22)) on hover. Tooltip never steals focus.</div>
+      </div>
+
+      <!-- F6 empty -->
+      <div>
+        <div style="border-radius: 16px; padding: 34px 20px; background: radial-gradient(circle at 20% 0%, #2B3040 0%, #16181F 55%, #101116 100%); display: grid; place-items: center;">
+          <div style="display: flex; align-items: center; gap: 10px; padding: 9px 16px 9px 12px; border-radius: 999px; background: rgba(28,30,38,0.85); border: 1px solid rgba(255,255,255,0.12); box-shadow: 0 12px 32px rgba(0,0,0,0.45), inset 0 1px 0 rgba(255,255,255,0.08); cursor: pointer;">
+            <div style="width: 20px; height: 20px; border-radius: 50%; border: 1.5px dashed rgba(255,255,255,0.3);"></div>
+            <div style="font-family: 'JetBrains Mono', monospace; font-size: 13px; font-weight: 600; color: rgba(255,255,255,0.45);">+</div>
+          </div>
+        </div>
+        <div style="font-size: 13px; font-weight: 600; margin: 10px 0 3px;">1f · Empty (0 enabled meters)</div>
+        <div style="font-size: 12px; color: rgba(236,236,234,0.5); line-height: 1.55;">All meters hidden in Edit: dashed ghost ring (1.5px, 30% white / 30% ink) + "+". Click opens the panel directly on the Edit tab.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ S2 · EXPANDED PANELS (INTERACTIVE) ============ -->
+  <div data-screen-label="S2 Expanded panels" style="margin-bottom: 72px;">
+    <div style="display: flex; align-items: baseline; gap: 16px; margin-bottom: 6px;">
+      <div style="font-size: 13px; font-weight: 700; letter-spacing: 2px; color: #FF8F6B;">§2</div>
+      <div style="font-size: 24px; font-weight: 700;">Expanded panel — both themes, fully interactive</div>
+    </div>
+    <div style="font-size: 13px; color: rgba(236,236,234,0.45); margin-bottom: 20px;">336px wide · padding 16 · radius 18 · content min-height 236 · expands from pinned corner 240ms cubic-bezier(0.32,0.72,0,1) scale 0.92→1 · collapse 200ms reverse · Esc / ✕ / click-outside collapses · tabs: Usage limits · History · Edit · 🔒 Theme</div>
+
+    <div style="display: flex; gap: 24px; align-items: start; flex-wrap: wrap;">
+
+      <!-- DARK PANEL -->
+      <div style="flex: 1; min-width: 420px; border-radius: 16px; padding: 36px 24px; background: radial-gradient(circle at 20% 0%, #2B3040 0%, #16181F 55%, #101116 100%); display: flex; flex-direction: column; align-items: center; gap: 12px;">
+        <div style="font-size: 10px; letter-spacing: 2px; text-transform: uppercase; color: rgba(255,255,255,0.35);">Dark Glass</div>
+        <div style="width: 336px; border-radius: 18px; background: rgba(24,26,33,0.92); border: 1px solid rgba(255,255,255,0.12); box-shadow: 0 24px 64px rgba(0,0,0,0.55), inset 0 1px 0 rgba(255,255,255,0.07); backdrop-filter: blur(20px); padding: 16px; color: #F0F0EE;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+            <div style="font-size: 14px; font-weight: 600; letter-spacing: -0.2px;">Claude usage</div>
+            <div style="display: flex; gap: 6px;">
+              <div title="Export usage log" style="width: 24px; height: 24px; border-radius: 7px; border: 1px solid rgba(255,255,255,0.14); display: grid; place-items: center; font-size: 12px; cursor: pointer; color: rgba(255,255,255,0.65);" style-hover="background: rgba(255,255,255,0.08);">⤓</div>
+              <div style="width: 24px; height: 24px; border-radius: 7px; border: 1px solid rgba(255,255,255,0.14); display: grid; place-items: center; font-size: 11px; cursor: pointer; color: rgba(255,255,255,0.65);" style-hover="background: rgba(255,255,255,0.08);">✕</div>
+            </div>
+          </div>
+          <div style="display: flex; gap: 4px; margin-bottom: 14px; background: rgba(255,255,255,0.05); border-radius: 10px; padding: 3px;">
+            {{ tabBarA }}
+          </div>
+
+          <div style="min-height: 236px;">
+            <sc-if value="{{ showLimitsA }}" hint-placeholder-val="{{ true }}">
+              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 9px;">
+                <div style="border-radius: 12px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.07); padding: 11px;">
+                  <div style="font-size: 10px; letter-spacing: 1px; text-transform: uppercase; color: rgba(255,255,255,0.4);">5-hr session</div>
+                  <div style="font-family: 'JetBrains Mono', monospace; font-size: 24px; font-weight: 600; margin: 5px 0 6px;">62<span style="font-size: 13px; color: rgba(255,255,255,0.4);">%</span></div>
+                  <div style="height: 4px; border-radius: 2px; background: rgba(255,255,255,0.1);"><div style="width: 62%; height: 100%; border-radius: 2px; background: #9BA3B5;"></div></div>
+                  <div style="font-size: 10.5px; color: rgba(255,255,255,0.4); margin-top: 6px;">resets in 1h 48m</div>
+                </div>
+                <div style="border-radius: 12px; background: rgba(255,143,107,0.08); border: 1px solid rgba(255,143,107,0.25); padding: 11px;">
+                  <div style="font-size: 10px; letter-spacing: 1px; text-transform: uppercase; color: rgba(255,143,107,0.8);">Weekly · all</div>
+                  <div style="font-family: 'JetBrains Mono', monospace; font-size: 24px; font-weight: 600; margin: 5px 0 6px; color: #FF8F6B;">81<span style="font-size: 13px; opacity: 0.6;">%</span></div>
+                  <div style="height: 4px; border-radius: 2px; background: rgba(255,255,255,0.1);"><div style="width: 81%; height: 100%; border-radius: 2px; background: #FF8F6B; box-shadow: 0 0 8px rgba(255,143,107,0.5);"></div></div>
+                  <div style="font-size: 10.5px; color: rgba(255,255,255,0.4); margin-top: 6px;">resets Thu · 2d 14h</div>
+                </div>
+                <div style="border-radius: 12px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.07); padding: 11px;">
+                  <div style="font-size: 10px; letter-spacing: 1px; text-transform: uppercase; color: rgba(255,255,255,0.4);">SDK credits</div>
+                  <div style="font-family: 'JetBrains Mono', monospace; font-size: 24px; font-weight: 600; margin: 5px 0 6px;">$12<span style="font-size: 13px; color: rgba(255,255,255,0.4);">/50</span></div>
+                  <div style="height: 4px; border-radius: 2px; background: rgba(255,255,255,0.1);"><div style="width: 24%; height: 100%; border-radius: 2px; background: #6BD9A8;"></div></div>
+                  <div style="font-size: 10.5px; color: rgba(255,255,255,0.4); margin-top: 6px;">restarts Jul 3</div>
+                </div>
+                <div style="border-radius: 12px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.07); padding: 11px;">
+                  <div style="font-size: 10px; letter-spacing: 1px; text-transform: uppercase; color: rgba(255,255,255,0.4);">All-time tokens</div>
+                  <div style="font-family: 'JetBrains Mono', monospace; font-size: 24px; font-weight: 600; margin: 5px 0 6px;">1.2B</div>
+                  <div style="font-size: 10.5px; color: rgba(255,255,255,0.4); margin-top: 14px;">since Aug 2024</div>
+                </div>
+              </div>
+            </sc-if>
+
+            <sc-if value="{{ showHistoryA }}" hint-placeholder-val="{{ false }}">
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                <span onClick="{{ prevA }}" style="width: 22px; height: 22px; border-radius: 7px; border: 1px solid rgba(255,255,255,0.14); display: grid; place-items: center; cursor: pointer; font-size: 12px; color: rgba(255,255,255,0.6);" style-hover="background: rgba(255,255,255,0.08);">‹</span>
+                <div style="font-size: 11px; letter-spacing: 1px; text-transform: uppercase; color: rgba(255,255,255,0.45);">{{ pageTitleA }}</div>
+                <span onClick="{{ nextA }}" style="width: 22px; height: 22px; border-radius: 7px; border: 1px solid rgba(255,255,255,0.14); display: grid; place-items: center; cursor: pointer; font-size: 12px; color: rgba(255,255,255,0.6);" style-hover="background: rgba(255,255,255,0.08);">›</span>
+              </div>
+              <sc-if value="{{ pageGraphA }}" hint-placeholder-val="{{ true }}">
+                <div style="border-radius: 12px; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.07); padding: 12px;">
+                  <svg viewBox="0 0 280 96" style="width: 100%; height: auto; display: block;">
+                    <defs>
+                      <linearGradient id="sgA" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="0%" stop-color="#FF8F6B" stop-opacity="0.35"></stop>
+                        <stop offset="100%" stop-color="#FF8F6B" stop-opacity="0"></stop>
+                      </linearGradient>
+                    </defs>
+                    <line x1="0" y1="24" x2="280" y2="24" stroke="rgba(255,255,255,0.07)" stroke-width="1"></line>
+                    <line x1="0" y1="52" x2="280" y2="52" stroke="rgba(255,255,255,0.07)" stroke-width="1"></line>
+                    <line x1="0" y1="80" x2="280" y2="80" stroke="rgba(255,255,255,0.07)" stroke-width="1"></line>
+                    <polygon points="0,74 22,64 44,68 66,52 88,58 110,42 132,48 154,32 176,40 198,26 220,34 242,16 262,26 280,12 280,96 0,96" fill="url(#sgA)"></polygon>
+                    <polyline points="0,74 22,64 44,68 66,52 88,58 110,42 132,48 154,32 176,40 198,26 220,34 242,16 262,26 280,12" fill="none" stroke="#FF8F6B" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"></polyline>
+                    <circle cx="280" cy="12" r="3" fill="#FF8F6B"></circle>
+                  </svg>
+                  <div style="display: flex; justify-content: space-between; font-size: 10px; color: rgba(255,255,255,0.35); margin-top: 6px; font-family: 'JetBrains Mono', monospace;"><span>May 28</span><span>Jun 11</span></div>
+                </div>
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 10px; font-size: 11px; color: rgba(255,255,255,0.45);">
+                  <span>peak day: <b style="color: #F0F0EE;">Jun 9 · 94%</b></span>
+                  <span>avg: <b style="color: #F0F0EE;">52%</b></span>
+                </div>
+              </sc-if>
+              <sc-if value="{{ pageAppsA }}" hint-placeholder-val="{{ false }}">
+                <div style="border-radius: 12px; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.07); padding: 13px; display: flex; flex-direction: column; gap: 12px;">
+                  <div>
+                    <div style="display: flex; justify-content: space-between; font-size: 12px;"><span>Claude Code</span><b style="font-family: 'JetBrains Mono', monospace;">$7.40</b></div>
+                    <div style="height: 4px; border-radius: 2px; background: rgba(255,255,255,0.1); margin-top: 5px;"><div style="width: 62%; height: 100%; border-radius: 2px; background: #FF8F6B;"></div></div>
+                  </div>
+                  <div>
+                    <div style="display: flex; justify-content: space-between; font-size: 12px;"><span>Cursor agent</span><b style="font-family: 'JetBrains Mono', monospace;">$3.10</b></div>
+                    <div style="height: 4px; border-radius: 2px; background: rgba(255,255,255,0.1); margin-top: 5px;"><div style="width: 26%; height: 100%; border-radius: 2px; background: #9BA3B5;"></div></div>
+                  </div>
+                  <div>
+                    <div style="display: flex; justify-content: space-between; font-size: 12px;"><span>Other apps</span><b style="font-family: 'JetBrains Mono', monospace;">$1.50</b></div>
+                    <div style="height: 4px; border-radius: 2px; background: rgba(255,255,255,0.1); margin-top: 5px;"><div style="width: 12%; height: 100%; border-radius: 2px; background: #6BD9A8;"></div></div>
+                  </div>
+                  <div style="border-top: 1px solid rgba(255,255,255,0.08); padding-top: 9px; display: flex; justify-content: space-between; font-size: 11px; color: rgba(255,255,255,0.45);"><span>this cycle</span><b style="color: #F0F0EE; font-family: 'JetBrains Mono', monospace;">$12.00 / $50</b></div>
+                </div>
+              </sc-if>
+              <div style="display: flex; justify-content: center; gap: 6px; margin-top: 12px;">
+                {{ dotsA }}
+              </div>
+            </sc-if>
+
+            <sc-if value="{{ showEditA }}" hint-placeholder-val="{{ false }}">
+              <div style="display: flex; flex-direction: column; gap: 7px;">
+                <div style="display: flex; align-items: center; gap: 9px; border-radius: 10px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.08); padding: 9px 11px;">
+                  <span style="color: rgba(255,255,255,0.3); cursor: grab;">⠿</span><span style="flex: 1; font-size: 12px;">5-hr session</span><span title="Show in pill" style="font-size: 12px; color: rgba(255,255,255,0.35); cursor: pointer;" style-hover="color: #FF8F6B;">◎</span><span style="font-size: 11px; color: rgba(255,255,255,0.4); cursor: pointer;" style-hover="color: #FF8F6B;">✕</span>
+                </div>
+                <div style="display: flex; align-items: center; gap: 9px; border-radius: 10px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.08); padding: 9px 11px;">
+                  <span style="color: rgba(255,255,255,0.3); cursor: grab;">⠿</span><span style="flex: 1; font-size: 12px;">Weekly · all models</span><span title="Show in pill" style="font-size: 12px; color: #FF8F6B; cursor: pointer;">◉</span><span style="font-size: 11px; color: rgba(255,255,255,0.4); cursor: pointer;" style-hover="color: #FF8F6B;">✕</span>
+                </div>
+                <div style="display: flex; align-items: center; gap: 9px; border-radius: 10px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.08); padding: 9px 11px;">
+                  <span style="color: rgba(255,255,255,0.3); cursor: grab;">⠿</span><span style="flex: 1; font-size: 12px;">Agent SDK credits</span><span title="Show in pill" style="font-size: 12px; color: rgba(255,255,255,0.35); cursor: pointer;" style-hover="color: #FF8F6B;">◎</span><span style="font-size: 11px; color: rgba(255,255,255,0.4); cursor: pointer;" style-hover="color: #FF8F6B;">✕</span>
+                </div>
+              </div>
+              <div style="display: flex; flex-wrap: wrap; gap: 6px; margin-top: 11px;">
+                <span style="font-size: 11px; border: 1px dashed rgba(255,255,255,0.25); border-radius: 999px; padding: 4px 11px; color: rgba(255,255,255,0.6); cursor: pointer;" style-hover="border-color: #FF8F6B; color: #FF8F6B;">+ all-time tokens</span>
+                <span style="font-size: 11px; border: 1px dashed rgba(255,255,255,0.25); border-radius: 999px; padding: 4px 11px; color: rgba(255,255,255,0.6); cursor: pointer;" style-hover="border-color: #FF8F6B; color: #FF8F6B;">+ Opus vs Sonnet</span>
+              </div>
+              <div style="border-radius: 10px; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.07); padding: 10px 11px; margin-top: 11px; display: flex; justify-content: space-between; align-items: center;">
+                <span style="font-size: 11px; color: rgba(255,255,255,0.45);">🔒 Panel structures — list · compact</span>
+                <span style="font-size: 10px; font-weight: 700; border-radius: 999px; padding: 2px 9px; background: rgba(255,143,107,0.15); color: #FF8F6B;">$5/mo</span>
+              </div>
+            </sc-if>
+
+            <sc-if value="{{ showThemeA }}" hint-placeholder-val="{{ false }}">
+              <div style="font-size: 10px; letter-spacing: 1px; text-transform: uppercase; color: rgba(255,255,255,0.4); margin-bottom: 7px;">Widget style</div>
+              <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 7px;">
+                {{ themeStyleCardsA }}
+              </div>
+              <div style="font-size: 10px; letter-spacing: 1px; text-transform: uppercase; color: rgba(255,255,255,0.4); margin: 10px 0 7px;">Skins</div>
+              <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 7px;">
+                {{ themeSkinCardsA }}
+              </div>
+              <div style="text-align: center; margin-top: 14px;">
+                <span style="display: inline-block; border-radius: 999px; padding: 8px 18px; font-size: 12px; font-weight: 600; background: #FF8F6B; color: #1A1410; cursor: pointer; box-shadow: 0 4px 16px rgba(255,143,107,0.35);" style-hover="transform: translateY(-1px);">Unlock themes · $5/mo</span>
+                <div style="font-size: 10.5px; color: rgba(255,255,255,0.35); margin-top: 7px;">tracking stays free, forever</div>
+              </div>
+            </sc-if>
+          </div>
+
+          <div style="border-top: 1px solid rgba(255,255,255,0.08); margin-top: 13px; padding-top: 10px; display: flex; justify-content: space-between; align-items: center;">
+            <span style="font-size: 11px; color: rgba(255,255,255,0.6); cursor: pointer; display: flex; align-items: center; gap: 5px;" style-hover="color: #FF8F6B;">⤓ Export <span style="font-family: 'JetBrains Mono', monospace;">.md</span></span>
+            <span style="font-size: 10px; color: rgba(255,255,255,0.3); font-family: 'JetBrains Mono', monospace;">→ claude-usage.md · 2m ago</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- LIGHT PANEL -->
+      <div style="flex: 1; min-width: 420px; position: relative; overflow: hidden; border-radius: 16px; padding: 36px 24px; background: radial-gradient(circle at 20% 0%, #F4F6FA 0%, #E0E4EC 50%, #CDD2DE 100%); display: flex; flex-direction: column; align-items: center; gap: 12px;">
+        <div style="position: absolute; left: -6%; top: -12%; width: 300px; height: 300px; border-radius: 50%; background: radial-gradient(circle, rgba(91,124,250,0.5) 0%, rgba(91,124,250,0) 70%); filter: blur(8px); pointer-events: none;"></div>
+        <div style="position: absolute; right: -8%; top: 20%; width: 340px; height: 340px; border-radius: 50%; background: radial-gradient(circle, rgba(224,106,67,0.5) 0%, rgba(224,106,67,0) 70%); filter: blur(8px); pointer-events: none;"></div>
+        <div style="position: absolute; left: 25%; bottom: -16%; width: 280px; height: 280px; border-radius: 50%; background: radial-gradient(circle, rgba(63,168,115,0.45) 0%, rgba(63,168,115,0) 70%); filter: blur(8px); pointer-events: none;"></div>
+        <div style="position: relative; font-size: 10px; letter-spacing: 2px; text-transform: uppercase; color: rgba(28,30,38,0.4);">Light Glass</div>
+        <div style="position: relative; width: 336px; border-radius: 18px; background: rgba(255,255,255,0.38); border: 1px solid rgba(255,255,255,0.7); box-shadow: 0 24px 64px rgba(28,30,38,0.25), inset 0 1px 0 rgba(255,255,255,0.95); backdrop-filter: blur(28px) saturate(1.6); padding: 16px; color: #1C1E26;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+            <div style="font-size: 14px; font-weight: 600; letter-spacing: -0.2px;">Claude usage</div>
+            <div style="display: flex; gap: 6px;">
+              <div title="Export usage log" style="width: 24px; height: 24px; border-radius: 7px; border: 1px solid rgba(28,30,38,0.12); display: grid; place-items: center; font-size: 12px; cursor: pointer; color: rgba(28,30,38,0.55);" style-hover="background: rgba(28,30,38,0.05);">⤓</div>
+              <div style="width: 24px; height: 24px; border-radius: 7px; border: 1px solid rgba(28,30,38,0.12); display: grid; place-items: center; font-size: 11px; cursor: pointer; color: rgba(28,30,38,0.55);" style-hover="background: rgba(28,30,38,0.05);">✕</div>
+            </div>
+          </div>
+          <div style="display: flex; gap: 4px; margin-bottom: 14px; background: rgba(28,30,38,0.05); border-radius: 10px; padding: 3px;">
+            {{ tabBarD }}
+          </div>
+
+          <div style="min-height: 236px;">
+            <sc-if value="{{ showLimitsD }}" hint-placeholder-val="{{ true }}">
+              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 9px;">
+                <div style="border-radius: 12px; background: rgba(255,255,255,0.5); border: 1px solid rgba(255,255,255,0.65); padding: 11px;">
+                  <div style="font-size: 10px; letter-spacing: 1px; text-transform: uppercase; color: rgba(28,30,38,0.45);">5-hr session</div>
+                  <div style="font-family: 'JetBrains Mono', monospace; font-size: 24px; font-weight: 600; margin: 5px 0 6px;">62<span style="font-size: 13px; color: rgba(28,30,38,0.4);">%</span></div>
+                  <div style="height: 4px; border-radius: 2px; background: rgba(28,30,38,0.08);"><div style="width: 62%; height: 100%; border-radius: 2px; background: #7A8294;"></div></div>
+                  <div style="font-size: 10.5px; color: rgba(28,30,38,0.45); margin-top: 6px;">resets in 1h 48m</div>
+                </div>
+                <div style="border-radius: 12px; background: rgba(224,106,67,0.07); border: 1px solid rgba(224,106,67,0.3); padding: 11px;">
+                  <div style="font-size: 10px; letter-spacing: 1px; text-transform: uppercase; color: #D45A33;">Weekly · all</div>
+                  <div style="font-family: 'JetBrains Mono', monospace; font-size: 24px; font-weight: 600; margin: 5px 0 6px; color: #D45A33;">81<span style="font-size: 13px; opacity: 0.6;">%</span></div>
+                  <div style="height: 4px; border-radius: 2px; background: rgba(28,30,38,0.08);"><div style="width: 81%; height: 100%; border-radius: 2px; background: #E06A43; box-shadow: 0 0 8px rgba(224,106,67,0.4);"></div></div>
+                  <div style="font-size: 10.5px; color: rgba(28,30,38,0.45); margin-top: 6px;">resets Thu · 2d 14h</div>
+                </div>
+                <div style="border-radius: 12px; background: rgba(255,255,255,0.5); border: 1px solid rgba(255,255,255,0.65); padding: 11px;">
+                  <div style="font-size: 10px; letter-spacing: 1px; text-transform: uppercase; color: rgba(28,30,38,0.45);">SDK credits</div>
+                  <div style="font-family: 'JetBrains Mono', monospace; font-size: 24px; font-weight: 600; margin: 5px 0 6px;">$12<span style="font-size: 13px; color: rgba(28,30,38,0.4);">/50</span></div>
+                  <div style="height: 4px; border-radius: 2px; background: rgba(28,30,38,0.08);"><div style="width: 24%; height: 100%; border-radius: 2px; background: #3FA873;"></div></div>
+                  <div style="font-size: 10.5px; color: rgba(28,30,38,0.45); margin-top: 6px;">restarts Jul 3</div>
+                </div>
+                <div style="border-radius: 12px; background: rgba(255,255,255,0.5); border: 1px solid rgba(255,255,255,0.65); padding: 11px;">
+                  <div style="font-size: 10px; letter-spacing: 1px; text-transform: uppercase; color: rgba(28,30,38,0.45);">All-time tokens</div>
+                  <div style="font-family: 'JetBrains Mono', monospace; font-size: 24px; font-weight: 600; margin: 5px 0 6px;">1.2B</div>
+                  <div style="font-size: 10.5px; color: rgba(28,30,38,0.45); margin-top: 14px;">since Aug 2024</div>
+                </div>
+              </div>
+            </sc-if>
+
+            <sc-if value="{{ showHistoryD }}" hint-placeholder-val="{{ false }}">
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                <span onClick="{{ prevD }}" style="width: 22px; height: 22px; border-radius: 7px; border: 1px solid rgba(28,30,38,0.12); display: grid; place-items: center; cursor: pointer; font-size: 12px; color: rgba(28,30,38,0.55);" style-hover="background: rgba(28,30,38,0.05);">‹</span>
+                <div style="font-size: 11px; letter-spacing: 1px; text-transform: uppercase; color: rgba(28,30,38,0.5);">{{ pageTitleD }}</div>
+                <span onClick="{{ nextD }}" style="width: 22px; height: 22px; border-radius: 7px; border: 1px solid rgba(28,30,38,0.12); display: grid; place-items: center; cursor: pointer; font-size: 12px; color: rgba(28,30,38,0.55);" style-hover="background: rgba(28,30,38,0.05);">›</span>
+              </div>
+              <sc-if value="{{ pageGraphD }}" hint-placeholder-val="{{ true }}">
+                <div style="border-radius: 12px; background: rgba(255,255,255,0.5); border: 1px solid rgba(255,255,255,0.65); padding: 12px;">
+                  <svg viewBox="0 0 280 96" style="width: 100%; height: auto; display: block;">
+                    <defs>
+                      <linearGradient id="sgD" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="0%" stop-color="#E06A43" stop-opacity="0.3"></stop>
+                        <stop offset="100%" stop-color="#E06A43" stop-opacity="0"></stop>
+                      </linearGradient>
+                    </defs>
+                    <line x1="0" y1="24" x2="280" y2="24" stroke="rgba(28,30,38,0.06)" stroke-width="1"></line>
+                    <line x1="0" y1="52" x2="280" y2="52" stroke="rgba(28,30,38,0.06)" stroke-width="1"></line>
+                    <line x1="0" y1="80" x2="280" y2="80" stroke="rgba(28,30,38,0.06)" stroke-width="1"></line>
+                    <polygon points="0,74 22,64 44,68 66,52 88,58 110,42 132,48 154,32 176,40 198,26 220,34 242,16 262,26 280,12 280,96 0,96" fill="url(#sgD)"></polygon>
+                    <polyline points="0,74 22,64 44,68 66,52 88,58 110,42 132,48 154,32 176,40 198,26 220,34 242,16 262,26 280,12" fill="none" stroke="#E06A43" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"></polyline>
+                    <circle cx="280" cy="12" r="3" fill="#E06A43"></circle>
+                  </svg>
+                  <div style="display: flex; justify-content: space-between; font-size: 10px; color: rgba(28,30,38,0.4); margin-top: 6px; font-family: 'JetBrains Mono', monospace;"><span>May 28</span><span>Jun 11</span></div>
+                </div>
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 10px; font-size: 11px; color: rgba(28,30,38,0.5);">
+                  <span>peak day: <b style="color: #1C1E26;">Jun 9 · 94%</b></span>
+                  <span>avg: <b style="color: #1C1E26;">52%</b></span>
+                </div>
+              </sc-if>
+              <sc-if value="{{ pageAppsD }}" hint-placeholder-val="{{ false }}">
+                <div style="border-radius: 12px; background: rgba(255,255,255,0.5); border: 1px solid rgba(255,255,255,0.65); padding: 13px; display: flex; flex-direction: column; gap: 12px;">
+                  <div>
+                    <div style="display: flex; justify-content: space-between; font-size: 12px;"><span>Claude Code</span><b style="font-family: 'JetBrains Mono', monospace;">$7.40</b></div>
+                    <div style="height: 4px; border-radius: 2px; background: rgba(28,30,38,0.08); margin-top: 5px;"><div style="width: 62%; height: 100%; border-radius: 2px; background: #E06A43;"></div></div>
+                  </div>
+                  <div>
+                    <div style="display: flex; justify-content: space-between; font-size: 12px;"><span>Cursor agent</span><b style="font-family: 'JetBrains Mono', monospace;">$3.10</b></div>
+                    <div style="height: 4px; border-radius: 2px; background: rgba(28,30,38,0.08); margin-top: 5px;"><div style="width: 26%; height: 100%; border-radius: 2px; background: #7A8294;"></div></div>
+                  </div>
+                  <div>
+                    <div style="display: flex; justify-content: space-between; font-size: 12px;"><span>Other apps</span><b style="font-family: 'JetBrains Mono', monospace;">$1.50</b></div>
+                    <div style="height: 4px; border-radius: 2px; background: rgba(28,30,38,0.08); margin-top: 5px;"><div style="width: 12%; height: 100%; border-radius: 2px; background: #3FA873;"></div></div>
+                  </div>
+                  <div style="border-top: 1px solid rgba(28,30,38,0.08); padding-top: 9px; display: flex; justify-content: space-between; font-size: 11px; color: rgba(28,30,38,0.5);"><span>this cycle</span><b style="color: #1C1E26; font-family: 'JetBrains Mono', monospace;">$12.00 / $50</b></div>
+                </div>
+              </sc-if>
+              <div style="display: flex; justify-content: center; gap: 6px; margin-top: 12px;">
+                {{ dotsD }}
+              </div>
+            </sc-if>
+
+            <sc-if value="{{ showEditD }}" hint-placeholder-val="{{ false }}">
+              <div style="display: flex; flex-direction: column; gap: 7px;">
+                <div style="display: flex; align-items: center; gap: 9px; border-radius: 10px; background: rgba(255,255,255,0.5); border: 1px solid rgba(255,255,255,0.65); padding: 9px 11px;">
+                  <span style="color: rgba(28,30,38,0.3); cursor: grab;">⠿</span><span style="flex: 1; font-size: 12px;">5-hr session</span><span title="Show in pill" style="font-size: 12px; color: rgba(28,30,38,0.35); cursor: pointer;" style-hover="color: #D45A33;">◎</span><span style="font-size: 11px; color: rgba(28,30,38,0.4); cursor: pointer;" style-hover="color: #D45A33;">✕</span>
+                </div>
+                <div style="display: flex; align-items: center; gap: 9px; border-radius: 10px; background: rgba(255,255,255,0.5); border: 1px solid rgba(255,255,255,0.65); padding: 9px 11px;">
+                  <span style="color: rgba(28,30,38,0.3); cursor: grab;">⠿</span><span style="flex: 1; font-size: 12px;">Weekly · all models</span><span title="Show in pill" style="font-size: 12px; color: #D45A33; cursor: pointer;">◉</span><span style="font-size: 11px; color: rgba(28,30,38,0.4); cursor: pointer;" style-hover="color: #D45A33;">✕</span>
+                </div>
+                <div style="display: flex; align-items: center; gap: 9px; border-radius: 10px; background: rgba(255,255,255,0.5); border: 1px solid rgba(255,255,255,0.65); padding: 9px 11px;">
+                  <span style="color: rgba(28,30,38,0.3); cursor: grab;">⠿</span><span style="flex: 1; font-size: 12px;">Agent SDK credits</span><span title="Show in pill" style="font-size: 12px; color: rgba(28,30,38,0.35); cursor: pointer;" style-hover="color: #D45A33;">◎</span><span style="font-size: 11px; color: rgba(28,30,38,0.4); cursor: pointer;" style-hover="color: #D45A33;">✕</span>
+                </div>
+              </div>
+              <div style="display: flex; flex-wrap: wrap; gap: 6px; margin-top: 11px;">
+                <span style="font-size: 11px; border: 1px dashed rgba(28,30,38,0.25); border-radius: 999px; padding: 4px 11px; color: rgba(28,30,38,0.55); cursor: pointer;" style-hover="border-color: #D45A33; color: #D45A33;">+ all-time tokens</span>
+                <span style="font-size: 11px; border: 1px dashed rgba(28,30,38,0.25); border-radius: 999px; padding: 4px 11px; color: rgba(28,30,38,0.55); cursor: pointer;" style-hover="border-color: #D45A33; color: #D45A33;">+ Opus vs Sonnet</span>
+              </div>
+              <div style="border-radius: 10px; background: rgba(255,255,255,0.4); border: 1px solid rgba(255,255,255,0.6); padding: 10px 11px; margin-top: 11px; display: flex; justify-content: space-between; align-items: center;">
+                <span style="font-size: 11px; color: rgba(28,30,38,0.5);">🔒 Panel structures — list · compact</span>
+                <span style="font-size: 10px; font-weight: 700; border-radius: 999px; padding: 2px 9px; background: rgba(224,106,67,0.13); color: #D45A33;">$5/mo</span>
+              </div>
+            </sc-if>
+
+            <sc-if value="{{ showThemeD }}" hint-placeholder-val="{{ false }}">
+              <div style="font-size: 10px; letter-spacing: 1px; text-transform: uppercase; color: rgba(28,30,38,0.45); margin-bottom: 7px;">Widget style</div>
+              <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 7px;">
+                {{ themeStyleCardsD }}
+              </div>
+              <div style="font-size: 10px; letter-spacing: 1px; text-transform: uppercase; color: rgba(28,30,38,0.45); margin: 10px 0 7px;">Skins</div>
+              <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 7px;">
+                {{ themeSkinCardsD }}
+              </div>
+              <div style="text-align: center; margin-top: 14px;">
+                <span style="display: inline-block; border-radius: 999px; padding: 8px 18px; font-size: 12px; font-weight: 600; background: #E06A43; color: #FFF6F2; cursor: pointer; box-shadow: 0 4px 16px rgba(224,106,67,0.35);" style-hover="transform: translateY(-1px);">Unlock themes · $5/mo</span>
+                <div style="font-size: 10.5px; color: rgba(28,30,38,0.4); margin-top: 7px;">tracking stays free, forever</div>
+              </div>
+            </sc-if>
+          </div>
+
+          <div style="border-top: 1px solid rgba(28,30,38,0.08); margin-top: 13px; padding-top: 10px; display: flex; justify-content: space-between; align-items: center;">
+            <span style="font-size: 11px; color: rgba(28,30,38,0.55); cursor: pointer; display: flex; align-items: center; gap: 5px;" style-hover="color: #D45A33;">⤓ Export <span style="font-family: 'JetBrains Mono', monospace;">.md</span></span>
+            <span style="font-size: 10px; color: rgba(28,30,38,0.35); font-family: 'JetBrains Mono', monospace;">→ claude-usage.md · 2m ago</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ S3 · FEATURE DEEP DIVES ============ -->
+  <div data-screen-label="S3 Deep dives" style="margin-bottom: 20px;">
+    <div style="display: flex; align-items: baseline; gap: 16px; margin-bottom: 6px;">
+      <div style="font-size: 13px; font-weight: 700; letter-spacing: 2px; color: #FF8F6B;">§3</div>
+      <div style="font-size: 24px; font-weight: 700;">Feature deep dives</div>
+    </div>
+    <div style="font-size: 13px; color: rgba(236,236,234,0.45); margin-bottom: 20px;">Shown in dark tokens; light theme swaps tokens 1:1 per the README tables.</div>
+
+    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px;">
+
+      <!-- card anatomy -->
+      <div>
+        <div style="border-radius: 16px; padding: 26px 20px; background: radial-gradient(circle at 20% 0%, #2B3040 0%, #16181F 55%, #101116 100%); display: grid; place-items: center;">
+          <div style="width: 200px; border-radius: 12px; background: rgba(255,143,107,0.08); border: 1px solid rgba(255,143,107,0.25); padding: 11px; color: #F0F0EE;">
+            <div style="font-size: 10px; letter-spacing: 1px; text-transform: uppercase; color: rgba(255,143,107,0.8);">Weekly · all</div>
+            <div style="font-family: 'JetBrains Mono', monospace; font-size: 24px; font-weight: 600; margin: 5px 0 6px; color: #FF8F6B;">81<span style="font-size: 13px; opacity: 0.6;">%</span></div>
+            <div style="height: 4px; border-radius: 2px; background: rgba(255,255,255,0.1);"><div style="width: 81%; height: 100%; border-radius: 2px; background: #FF8F6B; box-shadow: 0 0 8px rgba(255,143,107,0.5);"></div></div>
+            <div style="font-size: 10.5px; color: rgba(255,255,255,0.4); margin-top: 6px;">resets Thu · 2d 14h</div>
+          </div>
+        </div>
+        <div style="font-size: 13px; font-weight: 600; margin: 10px 0 3px;">3a · Limit card anatomy + hot rule</div>
+        <div style="font-size: 12px; color: rgba(236,236,234,0.5); line-height: 1.55;">radius 12 · pad 11 · label 10px caps ls1 · value 24px JBMono 600 (suffix 13px @40–60%) · bar 4px r2 (margins 5/6) · meta 10.5px. <b style="color:#FF8F6B;">Hot rule:</b> meter ≥75% → accent value+bar+glow AND accent-tint card surface; below 75% it reverts to the normal card. Value changes animate 400ms ease-out.</div>
+      </div>
+
+      <!-- edit dragging -->
+      <div>
+        <div style="border-radius: 16px; padding: 26px 20px; background: radial-gradient(circle at 20% 0%, #2B3040 0%, #16181F 55%, #101116 100%);">
+          <div style="display: flex; flex-direction: column; gap: 7px; color: #F0F0EE;">
+            <div style="display: flex; align-items: center; gap: 9px; border-radius: 10px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.08); padding: 9px 11px;"><span style="color: rgba(255,255,255,0.3);">⠿</span><span style="flex: 1; font-size: 12px;">5-hr session</span><span style="font-size: 12px; color: rgba(255,255,255,0.35);">◎</span><span style="font-size: 11px; color: rgba(255,255,255,0.4);">✕</span></div>
+            <div style="border: 1.5px dashed #FF8F6B; border-radius: 10px; height: 34px;"></div>
+            <div style="display: flex; align-items: center; gap: 9px; border-radius: 10px; background: rgba(40,43,52,0.98); border: 1px solid rgba(255,143,107,0.5); padding: 9px 11px; box-shadow: 0 8px 24px rgba(0,0,0,0.3); transform: scale(1.02) rotate(-0.5deg);"><span style="color: #FF8F6B; cursor: grabbing;">⠿</span><span style="flex: 1; font-size: 12px;">Weekly · all models</span><span style="font-size: 12px; color: #FF8F6B;">◉</span><span style="font-size: 11px; color: rgba(255,255,255,0.4);">✕</span></div>
+            <div style="display: flex; align-items: center; gap: 9px; border-radius: 10px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.08); padding: 9px 11px; opacity: 0.4;"><span style="color: rgba(255,255,255,0.3);">⠿</span><span style="flex: 1; font-size: 12px; text-decoration: line-through;">Agent SDK credits</span><span style="font-size: 12px; color: rgba(255,255,255,0.25);">◎</span><span style="font-size: 11px; width: 16px; height: 16px; border-radius: 50%; background: rgba(255,255,255,0.85); color: #16181F; display: grid; place-items: center;">✕</span></div>
+          </div>
+        </div>
+        <div style="font-size: 13px; font-weight: 600; margin: 10px 0 3px;">3b · Edit: drag + hidden states</div>
+        <div style="font-size: 12px; color: rgba(236,236,234,0.5); line-height: 1.55;">Dragged row: scale 1.02, shadow 0 8px 24px rgba(0,0,0,0.3), accent border; drop slot = 1.5px dashed accent, radius 10. Hidden row (✕ clicked): 40% opacity + strikethrough + filled ✕; re-click restores. Order & visibility apply LIVE to pill and grid. ◎/◉ = "show in pill" pin (see 3c).</div>
+      </div>
+
+      <!-- ring pin logic -->
+      <div>
+        <div style="border-radius: 16px; padding: 26px 20px; background: radial-gradient(circle at 20% 0%, #2B3040 0%, #16181F 55%, #101116 100%); display: flex; flex-direction: column; gap: 14px; align-items: center;">
+          <div style="display: flex; align-items: center; gap: 12px;">
+            <div style="font-family: 'JetBrains Mono', monospace; font-size: 10px; color: rgba(255,255,255,0.4); width: 70px; text-align: right;">0 pinned →</div>
+            <div style="display: flex; align-items: center; gap: 8px; padding: 7px 12px 7px 9px; border-radius: 999px; background: rgba(28,30,38,0.85); border: 1px solid rgba(255,255,255,0.12);">
+              <div style="position: relative; width: 16px; height: 16px; border-radius: 50%; background: conic-gradient(#FF8F6B 0 81%, rgba(255,255,255,0.1) 0);"><div style="position: absolute; inset: 3.5px; border-radius: 50%; background: #1D1F26;"></div></div>
+              <span style="font-family: 'JetBrains Mono', monospace; font-size: 11px; font-weight: 600; color: #FF8F6B;">81%</span>
+            </div>
+          </div>
+          <div style="display: flex; align-items: center; gap: 12px;">
+            <div style="font-family: 'JetBrains Mono', monospace; font-size: 10px; color: rgba(255,255,255,0.4); width: 70px; text-align: right;">2 pinned →</div>
+            <div style="display: flex; align-items: center; gap: 8px; padding: 7px 12px 7px 9px; border-radius: 999px; background: rgba(28,30,38,0.85); border: 1px solid rgba(255,255,255,0.12);">
+              <div style="position: relative; width: 16px; height: 16px; border-radius: 50%; background: conic-gradient(#FF8F6B 0 81%, rgba(255,255,255,0.1) 0);"><div style="position: absolute; inset: 3.5px; border-radius: 50%; background: #1D1F26;"></div></div>
+              <div style="position: relative; width: 16px; height: 16px; border-radius: 50%; background: conic-gradient(#6BD9A8 0 24%, rgba(255,255,255,0.1) 0);"><div style="position: absolute; inset: 3.5px; border-radius: 50%; background: #1D1F26;"></div></div>
+              <span style="font-family: 'JetBrains Mono', monospace; font-size: 11px; font-weight: 600; color: #FF8F6B;">81%</span>
+            </div>
+          </div>
+          <div style="display: flex; align-items: center; gap: 12px;">
+            <div style="font-family: 'JetBrains Mono', monospace; font-size: 10px; color: rgba(255,255,255,0.4); width: 70px; text-align: right;">5 max →</div>
+            <div style="display: flex; align-items: center; gap: 8px; padding: 7px 12px 7px 9px; border-radius: 999px; background: rgba(28,30,38,0.85); border: 1px solid rgba(255,255,255,0.12);">
+              <div style="position: relative; width: 16px; height: 16px; border-radius: 50%; background: conic-gradient(#9BA3B5 0 62%, rgba(255,255,255,0.1) 0);"><div style="position: absolute; inset: 3.5px; border-radius: 50%; background: #1D1F26;"></div></div>
+              <div style="position: relative; width: 16px; height: 16px; border-radius: 50%; background: conic-gradient(#FF8F6B 0 81%, rgba(255,255,255,0.1) 0);"><div style="position: absolute; inset: 3.5px; border-radius: 50%; background: #1D1F26;"></div></div>
+              <div style="position: relative; width: 16px; height: 16px; border-radius: 50%; background: conic-gradient(#6BD9A8 0 24%, rgba(255,255,255,0.1) 0);"><div style="position: absolute; inset: 3.5px; border-radius: 50%; background: #1D1F26;"></div></div>
+              <div style="position: relative; width: 16px; height: 16px; border-radius: 50%; background: conic-gradient(#9BA3B5 0 38%, rgba(255,255,255,0.1) 0);"><div style="position: absolute; inset: 3.5px; border-radius: 50%; background: #1D1F26;"></div></div>
+              <div style="position: relative; width: 16px; height: 16px; border-radius: 50%; background: conic-gradient(#9BA3B5 0 12%, rgba(255,255,255,0.1) 0);"><div style="position: absolute; inset: 3.5px; border-radius: 50%; background: #1D1F26;"></div></div>
+              <span style="font-family: 'JetBrains Mono', monospace; font-size: 11px; font-weight: 600; color: #FF8F6B;">81%</span>
+            </div>
+          </div>
+        </div>
+        <div style="font-size: 13px; font-weight: 600; margin: 10px 0 3px;">3c · Pill ring logic (default = 1)</div>
+        <div style="font-size: 12px; color: rgba(236,236,234,0.5); line-height: 1.55;">0 pinned (DEFAULT): one auto ring = worst enabled meter. N pinned: those rings, row order, max 5 (pin toggle disables past 5). Numeral always = worst of what's shown. Ring add/remove animates width 200ms ease-out.</div>
+      </div>
+    </div>
+  </div>
+
+    <!-- 3d · theme unlocked demo -->
+    <div style="margin: 0 0 72px; border-radius: 16px; padding: 22px 24px; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); display: flex; gap: 28px; align-items: stretch; flex-wrap: wrap;" data-screen-label="3d Theme unlocked demo">
+      <div style="width: 300px; display: flex; flex-direction: column;">
+        <div style="font-size: 13px; font-weight: 600; margin-bottom: 4px;">3d · Theme tab after purchase — try it</div>
+        <div style="font-size: 12px; color: rgba(236,236,234,0.5); line-height: 1.55; margin-bottom: 14px;">Once unlocked, the 🔒 disappears, every card becomes selectable, and choosing applies <b style="color:#ECECEA;">instantly</b> to the live pill + panel (no confirm step). Selection persists locally.</div>
+        <div style="font-size: 10px; letter-spacing: 1px; text-transform: uppercase; color: rgba(255,255,255,0.4); margin-bottom: 6px;">Widget style</div>
+        <div style="display: flex; flex-wrap: wrap; gap: 7px; margin-bottom: 12px;">
+          {{ demoStyleCards }}
+        </div>
+        <div style="font-size: 10px; letter-spacing: 1px; text-transform: uppercase; color: rgba(255,255,255,0.4); margin-bottom: 6px;">Skin</div>
+        <div style="display: flex; flex-wrap: wrap; gap: 7px;">
+          {{ demoSkinCards }}
+        </div>
+      </div>
+      <div style="flex: 1; min-width: 280px; border-radius: 12px; background: radial-gradient(circle at 20% 0%, #2B3040 0%, #16181F 55%, #101116 100%); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; padding: 28px 20px;">
+        {{ demoPill }}
+        <div style="font-size: 11px; color: rgba(255,255,255,0.4); font-family: 'JetBrains Mono', monospace;">{{ demoCaption }}</div>
+      </div>
+      <div style="width: 250px; font-size: 12px; color: rgba(236,236,234,0.5); line-height: 1.55; align-self: center;"><b style="color:#ECECEA;">Styles</b> change the collapsed form only — each aimed at a person: Status dot (invisible-until-it-matters minimalist), Countdown (deadline thinkers — time, not %), Battery (universal metaphor), Sparkline (data nerds), Segments (gamer HP bar). <b style="color:#ECECEA;">Skins</b> re-tint pill + panel, keeping layout/type/motion: <b style="color:#FFB454;">Amber HUD</b>, <b style="color:#C15F3C;">Warm Ledger</b>, <b style="color:#22D3EE;">Midnight OLED</b> (true-black night owls), <b style="color:#BFBFBA;">Paper</b> (e-ink calm, no glow), <b style="color:#FF2EC4;">Synthwave</b> (neon retro). Style × skin combine freely; swaps use the same 300ms crossfade as auto light/dark.</div>
+    </div>
+
+  <!-- ============ S4 · FIRST-RUN SETUP ============ -->
+  <div data-screen-label="S4 Setup" style="margin-bottom: 72px;">
+    <div style="display: flex; align-items: baseline; gap: 16px; margin-bottom: 6px;">
+      <div style="font-size: 13px; font-weight: 700; letter-spacing: 2px; color: #FF8F6B;">§4</div>
+      <div style="font-size: 24px; font-weight: 700;">First-run setup — single card</div>
+    </div>
+    <div style="font-size: 13px; color: rgba(236,236,234,0.45); margin-bottom: 20px;">Shown centered on first launch. 360px wide, same panel tokens. All values editable later from Edit tab footer gear. Corner is never asked — spawn bottom-right, user drags.</div>
+
+    <div style="display: flex; gap: 24px; align-items: start; flex-wrap: wrap;">
+      <div style="border-radius: 16px; padding: 36px; background: radial-gradient(circle at 20% 0%, #2B3040 0%, #16181F 55%, #101116 100%); display: grid; place-items: center;">
+        <div style="width: 360px; border-radius: 18px; background: rgba(24,26,33,0.92); border: 1px solid rgba(255,255,255,0.12); box-shadow: 0 24px 64px rgba(0,0,0,0.55), inset 0 1px 0 rgba(255,255,255,0.07); padding: 20px; color: #F0F0EE;">
+          <div style="font-size: 16px; font-weight: 600; letter-spacing: -0.2px;">Let's calibrate your meters</div>
+          <div style="font-size: 12px; color: rgba(255,255,255,0.45); margin: 4px 0 16px;">30 seconds. Everything stays on this device.</div>
+
+          <div style="font-size: 10px; letter-spacing: 1px; text-transform: uppercase; color: rgba(255,255,255,0.4); margin-bottom: 6px;">Your plan</div>
+          <div style="display: flex; gap: 4px; background: rgba(255,255,255,0.05); border-radius: 10px; padding: 3px; margin-bottom: 14px;">
+            <span style="flex: 1; text-align: center; padding: 6px 0; border-radius: 8px; font-size: 12px; color: rgba(255,255,255,0.5); cursor: pointer;">Pro</span>
+            <span style="flex: 1; text-align: center; padding: 6px 0; border-radius: 8px; font-size: 12px; background: rgba(255,143,107,0.16); color: #FF8F6B; font-weight: 600; cursor: pointer;">Max 5×</span>
+            <span style="flex: 1; text-align: center; padding: 6px 0; border-radius: 8px; font-size: 12px; color: rgba(255,255,255,0.5); cursor: pointer;">Max 20×</span>
+          </div>
+
+          <div style="font-size: 10px; letter-spacing: 1px; text-transform: uppercase; color: rgba(255,255,255,0.4); margin-bottom: 6px;">When does your monthly plan restart?</div>
+          <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 5px;">
+            <span style="border: 1px solid rgba(255,255,255,0.14); border-radius: 8px; padding: 6px 12px; font-size: 12px; cursor: pointer;">the <b style="font-family: 'JetBrains Mono', monospace;">3rd</b> of each month ▾</span>
+          </div>
+          <div style="font-size: 11px; color: rgba(255,255,255,0.35); margin-bottom: 14px;">drives the SDK credits cycle — you only ever see what's left until reset, never lifetime totals</div>
+
+          <div style="font-size: 10px; letter-spacing: 1px; text-transform: uppercase; color: rgba(255,255,255,0.4); margin-bottom: 6px;">Weekly limit resets</div>
+          <div style="display: flex; gap: 8px; margin-bottom: 18px;">
+            <span style="border: 1px solid rgba(255,255,255,0.14); border-radius: 8px; padding: 6px 12px; font-size: 12px; cursor: pointer;">Thursdays ▾</span>
+            <span style="border: 1px solid rgba(255,255,255,0.14); border-radius: 8px; padding: 6px 12px; font-size: 12px; cursor: pointer; font-family: 'JetBrains Mono', monospace;">9:00 am ▾</span>
+          </div>
+
+          <div style="border-radius: 999px; padding: 9px 0; text-align: center; font-size: 13px; font-weight: 600; background: #FF8F6B; color: #1A1410; cursor: pointer; box-shadow: 0 4px 16px rgba(255,143,107,0.35);" style-hover="transform: translateY(-1px);">Start tracking →</div>
+        </div>
+      </div>
+
+      <div style="flex: 1; min-width: 320px; font-size: 13px; color: rgba(236,236,234,0.55); line-height: 1.7; padding-top: 8px;">
+        <div style="font-size: 14px; font-weight: 600; color: #ECECEA; margin-bottom: 8px;">Spec</div>
+        · Card 360px · padding 20 · panel tokens · title 16/600, subtitle 12 @45%.<br />
+        · <b style="color:#ECECEA;">Plan</b>: segmented control (same anatomy as tab bar). Maps to SDK pool: Pro $10 · Max 5× $50 · Max 20× $200 — placeholder values, confirm against Anthropic billing at build time.<br />
+        · <b style="color:#ECECEA;">Monthly restart</b>: day-of-month dropdown 1–28. Sets SDK "restarts &lt;date&gt;" + log cycle boundaries.<br />
+        · <b style="color:#ECECEA;">Weekly reset</b>: weekday + time dropdowns; prefill from account data when available.<br />
+        · CTA = accent capsule, full width. On submit: card scales out 200ms, pill spawns bottom-right corner with the expand-curve in reverse.<br />
+        · Light theme: swap tokens 1:1. Re-entry point: gear icon, bottom of Edit tab (16px, secondary, right-aligned — keep subtle).
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ S5 · WINDOW, MOTION, THEME ============ -->
+  <div data-screen-label="S5 Window and motion" style="margin-bottom: 72px;">
+    <div style="display: flex; align-items: baseline; gap: 16px; margin-bottom: 6px;">
+      <div style="font-size: 13px; font-weight: 700; letter-spacing: 2px; color: #FF8F6B;">§5</div>
+      <div style="font-size: 24px; font-weight: 700;">Window behavior · motion · auto theme</div>
+    </div>
+    <div style="font-size: 13px; color: rgba(236,236,234,0.45); margin-bottom: 20px;">Always-on-top above fullscreen apps, all Spaces/desktops. Never steals focus. No dock/taskbar/Alt-Tab presence; tray icon for quit + re-run setup.</div>
+
+    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px;">
+
+      <!-- corner snap -->
+      <div>
+        <div style="border-radius: 16px; padding: 20px; background: radial-gradient(circle at 20% 0%, #2B3040 0%, #16181F 55%, #101116 100%);">
+          <div style="position: relative; height: 170px; border: 1px solid rgba(255,255,255,0.15); border-radius: 10px;">
+            <div style="position: absolute; left: 8px; top: 8px; width: 52px; height: 24px; border: 1.5px dashed rgba(255,255,255,0.25); border-radius: 999px;"></div>
+            <div style="position: absolute; right: 8px; top: 8px; width: 52px; height: 24px; border: 1.5px dashed rgba(255,255,255,0.25); border-radius: 999px;"></div>
+            <div style="position: absolute; left: 8px; bottom: 8px; width: 52px; height: 24px; border: 1.5px dashed rgba(255,255,255,0.25); border-radius: 999px;"></div>
+            <div style="position: absolute; right: 8px; bottom: 8px; width: 52px; height: 24px; border: 2px solid #FF8F6B; border-radius: 999px; background: rgba(255,143,107,0.1);"></div>
+            <div style="position: absolute; right: 78px; bottom: 44px; display: flex; align-items: center; gap: 6px; padding: 5px 10px 5px 7px; border-radius: 999px; background: rgba(28,30,38,0.9); border: 1px solid rgba(255,255,255,0.2); transform: rotate(-3deg); box-shadow: 0 8px 20px rgba(0,0,0,0.4);">
+              <div style="width: 12px; height: 12px; border-radius: 50%; background: conic-gradient(#FF8F6B 0 81%, rgba(255,255,255,0.1) 0);"></div>
+              <span style="font-family: 'JetBrains Mono', monospace; font-size: 9px; color: #FF8F6B;">81%</span>
+            </div>
+            <div style="position: absolute; right: 56px; bottom: 30px; color: #FF8F6B; font-size: 14px; transform: rotate(25deg);">↘</div>
+          </div>
+        </div>
+        <div style="font-size: 13px; font-weight: 600; margin: 10px 0 3px;">5a · Drag → corner snap</div>
+        <div style="font-size: 12px; color: rgba(236,236,234,0.5); line-height: 1.55;">Drag anywhere on pill (or panel header). While dragging: 4 ghost targets fade in (120ms, dashed 1.5px @25%, pill-shaped). Release: snap to nearest corner, 180ms ease-out, <b style="color:#ECECEA;">16px margins</b> both axes. Nearest = euclidean distance to corner. Pinned corner persists across restarts; panel always grows inward from it (transform-origin = that corner).</div>
+      </div>
+
+      <!-- auto hide -->
+      <div>
+        <div style="border-radius: 16px; padding: 20px; background: radial-gradient(circle at 20% 0%, #2B3040 0%, #16181F 55%, #101116 100%);">
+          <div style="position: relative; height: 170px; border: 1px solid rgba(255,255,255,0.15); border-radius: 10px; overflow: hidden;">
+            <div style="position: absolute; right: 0; top: 38px; display: flex; flex-direction: column; gap: 4px;">
+              <div style="width: 30px; height: 4px; border-radius: 2px 0 0 2px; background: rgba(255,255,255,0.18);"><div style="width: 62%; height: 100%; background: #9BA3B5; border-radius: 2px 0 0 2px;"></div></div>
+              <div style="width: 30px; height: 4px; border-radius: 2px 0 0 2px; background: rgba(255,255,255,0.18);"><div style="width: 81%; height: 100%; background: #FF8F6B; border-radius: 2px 0 0 2px;"></div></div>
+              <div style="width: 30px; height: 4px; border-radius: 2px 0 0 2px; background: rgba(255,255,255,0.18);"><div style="width: 24%; height: 100%; background: #6BD9A8; border-radius: 2px 0 0 2px;"></div></div>
+            </div>
+            <div style="position: absolute; right: 44px; top: 40px; font-size: 11px; color: rgba(255,255,255,0.4);">idle 10s → sliver</div>
+            <div style="position: absolute; right: 8px; bottom: 14px; display: flex; align-items: center; gap: 6px; padding: 5px 10px 5px 7px; border-radius: 999px; background: rgba(28,30,38,0.9); border: 1px solid rgba(255,255,255,0.15);">
+              <div style="width: 12px; height: 12px; border-radius: 50%; background: conic-gradient(#FF8F6B 0 81%, rgba(255,255,255,0.1) 0);"></div>
+              <span style="font-family: 'JetBrains Mono', monospace; font-size: 9px; color: #FF8F6B;">81%</span>
+            </div>
+            <div style="position: absolute; right: 86px; bottom: 18px; font-size: 11px; color: rgba(255,255,255,0.4);">hover edge → slides back ←</div>
+          </div>
+        </div>
+        <div style="font-size: 13px; font-weight: 600; margin: 10px 0 3px;">5b · Auto-hide sliver (v1.1, default OFF)</div>
+        <div style="font-size: 12px; color: rgba(236,236,234,0.5); line-height: 1.55;">Setting-gated. After 10s without pointer interaction while collapsed: pill slides into the pinned edge leaving a 30×4px bar per visible ring (gap 4, same colors, slide 200ms). Hovering the sliver slides the pill back out. Expanded panel never auto-hides.</div>
+      </div>
+
+      <!-- auto theme -->
+      <div>
+        <div style="border-radius: 16px; padding: 20px; background: linear-gradient(100deg, #E8ECF4 0%, #E8ECF4 48%, #16181F 52%, #16181F 100%);">
+          <div style="position: relative; height: 170px;">
+            <div style="position: absolute; left: 12px; top: 28px; display: flex; align-items: center; gap: 6px; padding: 6px 11px 6px 8px; border-radius: 999px; background: rgba(255,255,255,0.5); border: 1px solid rgba(255,255,255,0.75); box-shadow: 0 8px 20px rgba(28,30,38,0.18);">
+              <div style="position: relative; width: 14px; height: 14px; border-radius: 50%; background: conic-gradient(#E06A43 0 81%, rgba(28,30,38,0.1) 0);"><div style="position: absolute; inset: 3px; border-radius: 50%; background: #FBFBFD;"></div></div>
+              <span style="font-family: 'JetBrains Mono', monospace; font-size: 10px; font-weight: 600; color: #D45A33;">81%</span>
+            </div>
+            <div style="position: absolute; left: 14px; top: 66px; font-size: 11px; color: rgba(28,30,38,0.55);">OS light<br />07:00–19:00 fallback</div>
+            <div style="position: absolute; right: 12px; top: 28px; display: flex; align-items: center; gap: 6px; padding: 6px 11px 6px 8px; border-radius: 999px; background: rgba(28,30,38,0.85); border: 1px solid rgba(255,255,255,0.12); box-shadow: 0 8px 20px rgba(0,0,0,0.4);">
+              <div style="position: relative; width: 14px; height: 14px; border-radius: 50%; background: conic-gradient(#FF8F6B 0 81%, rgba(255,255,255,0.1) 0);"><div style="position: absolute; inset: 3px; border-radius: 50%; background: #1D1F26;"></div></div>
+              <span style="font-family: 'JetBrains Mono', monospace; font-size: 10px; font-weight: 600; color: #FF8F6B;">81%</span>
+            </div>
+            <div style="position: absolute; right: 14px; top: 66px; font-size: 11px; color: rgba(255,255,255,0.5); text-align: right;">OS dark<br />night / dark wallpaper</div>
+            <div style="position: absolute; left: 0; right: 0; bottom: 18px; text-align: center; font-family: 'JetBrains Mono', monospace; font-size: 10px; color: rgba(150,150,160,0.9);">←  300ms color crossfade  →</div>
+          </div>
+        </div>
+        <div style="font-size: 13px; font-weight: 600; margin: 10px 0 3px;">5c · Auto light/dark</div>
+        <div style="font-size: 12px; color: rgba(236,236,234,0.5); line-height: 1.55;">Follow OS appearance live (prefers-color-scheme / effectiveAppearance / AppsUseLightTheme) — covers OS night-switching. No OS signal → local-time fallback: light 07:00–19:00. Transition: 300ms ease on colors/borders/shadows; never animate blur. Free; no manual toggle in v1.</div>
+      </div>
+    </div>
+
+    <!-- expand motion strip -->
+    <div style="margin-top: 20px; border-radius: 16px; padding: 18px 22px; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); display: flex; gap: 28px; align-items: center; flex-wrap: wrap;">
+      <div style="font-size: 13px; font-weight: 600;">Motion table</div>
+      <div style="font-size: 12px; color: rgba(236,236,234,0.55); font-family: 'JetBrains Mono', monospace; display: flex; gap: 22px; flex-wrap: wrap;">
+        <span>expand 240ms cb(0.32,0.72,0,1)</span>
+        <span>collapse 200ms</span>
+        <span>tab highlight 150ms</span>
+        <span>carousel slide 200ms</span>
+        <span>snap 180ms</span>
+        <span>theme 300ms</span>
+        <span>meter fill 400ms</span>
+        <span>ring add/remove 200ms</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ S6 · EXPORT & DATA ============ -->
+  <div data-screen-label="S6 Export" style="margin-bottom: 56px;">
+    <div style="display: flex; align-items: baseline; gap: 16px; margin-bottom: 6px;">
+      <div style="font-size: 13px; font-weight: 700; letter-spacing: 2px; color: #FF8F6B;">§6</div>
+      <div style="font-size: 24px; font-weight: 700;">Export (.md) · data states</div>
+    </div>
+    <div style="font-size: 13px; color: rgba(236,236,234,0.45); margin-bottom: 20px;">The widget appends to a local Markdown log every 15 min + at every reset boundary. ⤓ (header) and "Export .md" (footer) open a save dialog with a copy of the log.</div>
+
+    <div style="display: flex; gap: 24px; align-items: start; flex-wrap: wrap;">
+      <div style="flex: 1; min-width: 380px; border-radius: 14px; background: #101116; border: 1px solid rgba(255,255,255,0.1); padding: 18px 20px; font-family: 'JetBrains Mono', monospace; font-size: 12px; line-height: 1.8; color: rgba(236,236,234,0.75); white-space: pre; overflow-x: auto;"># Claude usage log
+&lt;!-- generated by Usage Widget v1.0 — do not hand-edit --&gt;
+
+## 2026-06-11
+- 14:12 · session 62% (resets 16:00) · weekly 81% (resets Thu 09:00) · sdk $12.00/$50.00
+- 13:57 · session 58% · weekly 80% · sdk $11.80/$50.00
+
+## 2026-06-10
+- 23:45 · session 12% · weekly 76% · sdk $11.50/$50.00</div>
+
+      <div style="width: 380px; display: flex; flex-direction: column; gap: 14px;">
+        <div style="border-radius: 14px; background: rgba(24,26,33,0.92); border: 1px solid rgba(255,255,255,0.12); padding: 12px 14px; display: flex; justify-content: space-between; align-items: center;">
+          <span style="font-size: 11px; color: rgba(255,255,255,0.6);">⤓ Export <span style="font-family: 'JetBrains Mono', monospace;">.md</span></span>
+          <span style="font-size: 10px; color: rgba(255,255,255,0.3); font-family: 'JetBrains Mono', monospace;">→ claude-usage.md · 2m ago</span>
+        </div>
+        <div style="font-size: 12px; color: rgba(236,236,234,0.5); line-height: 1.55; margin-top: -6px;">Footer, fresh: path + minutes since last write @30% opacity.</div>
+        <div style="border-radius: 14px; background: rgba(24,26,33,0.92); border: 1px solid rgba(255,255,255,0.12); padding: 12px 14px; display: flex; justify-content: space-between; align-items: center;">
+          <span style="font-size: 11px; color: rgba(255,255,255,0.6);">⤓ Export <span style="font-family: 'JetBrains Mono', monospace;">.md</span></span>
+          <span style="font-size: 10px; color: #FF8F6B; font-family: 'JetBrains Mono', monospace;">stale · 22m</span>
+        </div>
+        <div style="font-size: 12px; color: rgba(236,236,234,0.5); line-height: 1.55; margin-top: -6px;">Stale (&gt;15 min since last successful usage sync): right side flips to accent <span style="font-family:'JetBrains Mono',monospace;">stale · Xm</span>. Pill is unaffected; values keep showing last known + countdowns keep ticking. Default log path <span style="font-family:'JetBrains Mono',monospace;">~/Documents/claude-usage.md</span>; data source wiring is implementation scope.</div>
+      </div>
+    </div>
+  </div>
+
+  <div style="border-top: 1px solid rgba(255,255,255,0.1); padding-top: 20px; font-size: 14px; color: rgba(236,236,234,0.5); line-height: 1.6; max-width: 800px;">
+    This board + the README in <span style="font-family:'JetBrains Mono',monospace; font-size:13px;">design_handoff_usage_widget/</span> are the complete spec. §2 panels are interactive — click tabs and the History ‹ › carousel.
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  state = {
+    a: { tab: 'limits', page: 0 },
+    d: { tab: 'limits', page: 0 },
+    demo: { style: 'ring', skin: 'amber' },
+  };
+
+  skins = {
+    glass: { name: 'Glass', bg: 'rgba(28,30,38,0.85)', border: 'rgba(255,255,255,0.12)', hole: '#1D1F26', accent: '#FF8F6B', neutral: '#9BA3B5', green: '#6BD9A8', track: 'rgba(255,255,255,0.12)', radius: 999, shadow: '0 12px 32px rgba(0,0,0,0.45)' },
+    amber: { name: 'Amber HUD', bg: '#12140C', border: '#4A3F22', hole: '#12140C', accent: '#FFB454', neutral: '#9C9272', green: '#7AE08C', track: 'rgba(255,255,255,0.14)', radius: 6, shadow: '0 12px 32px rgba(0,0,0,0.55)' },
+    ledger: { name: 'Warm Ledger', bg: '#FBF7F0', border: '#D9CBB4', hole: '#FBF7F0', accent: '#C15F3C', neutral: '#8C8073', green: '#7D8B6F', track: '#EAE1D2', radius: 999, shadow: '0 12px 32px rgba(96,72,48,0.35)' },
+    midnight: { name: 'Midnight OLED', bg: '#000000', border: '#1E2630', hole: '#000000', accent: '#22D3EE', neutral: '#475569', green: '#34D399', track: 'rgba(255,255,255,0.12)', radius: 999, shadow: '0 12px 32px rgba(0,0,0,0.7)' },
+    paper: { name: 'Paper', bg: '#F7F7F5', border: '#D4D4D0', hole: '#F7F7F5', accent: '#1A1A1A', neutral: '#A3A39E', green: '#6E6E68', track: '#E4E4E0', radius: 3, shadow: '0 8px 20px rgba(0,0,0,0.15)', noGlow: true },
+    synth: { name: 'Synthwave', bg: '#16102E', border: '#5B2E9E', hole: '#16102E', accent: '#FF2EC4', neutral: '#7C5CFF', green: '#00E5A0', track: 'rgba(255,255,255,0.12)', radius: 999, shadow: '0 12px 36px rgba(124,46,196,0.45)' },
+  };
+
+  styleNames = { ring: 'Ring pill', naked: 'Naked bars', dot: 'Status dot', countdown: 'Countdown', battery: 'Battery', spark: 'Sparkline', segments: 'Segments' };
+
+  makeDemoCards(kind) {
+    const sel = this.state.demo[kind === 'style' ? 'style' : 'skin'];
+    const opts = kind === 'style'
+      ? [['ring', 'Ring pill'], ['naked', 'Naked bars'], ['dot', 'Status dot'], ['countdown', 'Countdown'], ['battery', 'Battery'], ['spark', 'Sparkline'], ['segments', 'Segments']]
+      : [['glass', 'Glass'], ['amber', 'Amber HUD'], ['ledger', 'Warm Ledger'], ['midnight', 'Midnight OLED'], ['paper', 'Paper'], ['synth', 'Synthwave']];
+    return React.createElement(
+      'div',
+      { style: { display: 'contents' } },
+      opts.map(([id, label]) => {
+        const active = sel === id;
+        const children = [label];
+        if (kind === 'skin') {
+          const sk = this.skins[id];
+          children.unshift(
+            React.createElement('span', {
+              key: 'dots',
+              style: { display: 'inline-flex', gap: '3px', marginRight: '6px', verticalAlign: 'middle' },
+            },
+              React.createElement('span', { key: 1, style: { width: '8px', height: '8px', borderRadius: '50%', background: sk.bg, border: '1px solid ' + sk.border, display: 'inline-block' } }),
+              React.createElement('span', { key: 2, style: { width: '8px', height: '8px', borderRadius: '50%', background: sk.accent, display: 'inline-block' } })
+            )
+          );
+        }
+        return React.createElement('div', {
+          key: id,
+          onClick: () => this.setState(s => ({ demo: { ...s.demo, [kind === 'style' ? 'style' : 'skin']: id } })),
+          style: {
+            flex: '1 1 28%', textAlign: 'center', padding: '7px 5px', borderRadius: '10px', fontSize: '10.5px',
+            cursor: 'pointer', transition: 'all 0.15s', lineHeight: 1.3,
+            border: active ? '1px solid #FF8F6B' : '1px solid rgba(255,255,255,0.1)',
+            background: active ? 'rgba(255,143,107,0.08)' : 'rgba(255,255,255,0.04)',
+            color: active ? '#FF8F6B' : 'rgba(255,255,255,0.65)',
+            fontWeight: active ? 600 : 400,
+          },
+        }, ...children);
+      })
+    );
+  }
+
+  makeDemoPill() {
+    const { style, skin } = this.state.demo;
+    const sk = this.skins[skin];
+    const el = React.createElement;
+    const glow = sk.noGlow ? 'none' : '0 0 12px ' + sk.accent + '66';
+    const box = (extra) => ({ background: sk.bg, border: '1px solid ' + sk.border, boxShadow: sk.shadow, transition: 'all 0.3s', ...extra });
+    const mono = { fontFamily: "'JetBrains Mono', monospace", fontWeight: 600, color: sk.accent };
+    if (style === 'ring') {
+      return el('div', { style: box({ display: 'flex', alignItems: 'center', gap: '10px', padding: '9px 16px 9px 12px', borderRadius: sk.radius + 'px' }) },
+        el('div', { style: { position: 'relative', width: '20px', height: '20px', borderRadius: '50%', background: 'conic-gradient(' + sk.accent + ' 0 81%, ' + sk.track + ' 81% 100%)', boxShadow: glow } },
+          el('div', { style: { position: 'absolute', inset: '4px', borderRadius: '50%', background: sk.hole } })),
+        el('span', { style: { ...mono, fontSize: '13px' } }, '81%'));
+    }
+    if (style === 'naked') {
+      const bar = (w, c, i) => el('div', { key: i, style: { width: '56px', height: '5px', borderRadius: '3px', background: sk.track } },
+        el('div', { style: { width: w + '%', height: '100%', borderRadius: '3px', background: c } }));
+      return el('div', { style: box({ display: 'flex', flexDirection: 'column', gap: '4px', padding: '8px 10px', borderRadius: Math.min(sk.radius, 8) + 'px' }) },
+        bar(62, sk.neutral, 0), bar(81, sk.accent, 1), bar(24, sk.green, 2));
+    }
+    if (style === 'dot') {
+      return el('div', { style: box({ padding: '10px', borderRadius: sk.radius + 'px', display: 'grid', placeItems: 'center' }) },
+        el('div', { style: { width: '12px', height: '12px', borderRadius: '50%', background: sk.accent, boxShadow: glow } }));
+    }
+    if (style === 'countdown') {
+      return el('div', { style: box({ display: 'flex', alignItems: 'center', gap: '7px', padding: '9px 14px', borderRadius: sk.radius + 'px' }) },
+        el('span', { style: { fontSize: '13px', color: sk.neutral, lineHeight: 1 } }, '◷'),
+        el('span', { style: { ...mono, fontSize: '12px' } }, '1h 48m'));
+    }
+    if (style === 'battery') {
+      return el('div', { style: box({ display: 'flex', alignItems: 'center', gap: '8px', padding: '9px 14px', borderRadius: sk.radius + 'px' }) },
+        el('div', { style: { display: 'flex', alignItems: 'center', gap: '1.5px' } },
+          el('div', { key: 'b', style: { width: '26px', height: '13px', border: '1.5px solid ' + sk.neutral, borderRadius: '3px', padding: '1.5px', boxSizing: 'border-box' } },
+            el('div', { style: { width: '19%', height: '100%', borderRadius: '1px', background: sk.accent, boxShadow: glow } })),
+          el('div', { key: 'n', style: { width: '2.5px', height: '6px', borderRadius: '1px', background: sk.neutral } })),
+        el('span', { style: { ...mono, fontSize: '12px' } }, '19%'));
+    }
+    if (style === 'spark') {
+      return el('div', { style: box({ display: 'flex', alignItems: 'center', gap: '9px', padding: '9px 14px', borderRadius: sk.radius + 'px' }) },
+        el('svg', { viewBox: '0 0 40 16', style: { width: '40px', height: '16px', display: 'block' } },
+          el('polyline', { points: '0,13 6,10 12,12 18,8 24,10 30,4 36,7 40,3', fill: 'none', stroke: sk.accent, strokeWidth: 1.5, strokeLinejoin: 'round', strokeLinecap: 'round' })),
+        el('span', { style: { ...mono, fontSize: '12px' } }, '81%'));
+    }
+    const segs = [];
+    for (let i = 0; i < 10; i++) {
+      segs.push(el('div', { key: i, style: { width: '4px', height: '13px', borderRadius: '1px', background: i < 8 ? sk.accent : sk.track, boxShadow: i < 8 && !sk.noGlow ? '0 0 6px ' + sk.accent + '44' : 'none' } }));
+    }
+    return el('div', { style: box({ display: 'flex', alignItems: 'center', gap: '8px', padding: '9px 14px', borderRadius: sk.radius + 'px' }) },
+      el('div', { style: { display: 'flex', gap: '2px' } }, ...segs),
+      el('span', { style: { ...mono, fontSize: '12px' } }, '81%'));
+  }
+
+  panelTok = {
+    a: { accent: '#FF8F6B', accentText: '#FF8F6B', accentTint: 'rgba(255,143,107,0.07)', lockedBorder: 'rgba(255,255,255,0.08)', lockedBg: 'rgba(255,255,255,0.03)', neutral: 'rgba(255,255,255,0.5)', track: 'rgba(255,255,255,0.15)' },
+    d: { accent: '#E06A43', accentText: '#D45A33', accentTint: 'rgba(224,106,67,0.06)', lockedBorder: 'rgba(255,255,255,0.6)', lockedBg: 'rgba(255,255,255,0.45)', neutral: '#7A8294', track: 'rgba(28,30,38,0.12)' },
+  };
+
+  stylePreviewEl(id, tok) {
+    const el = React.createElement;
+    if (id === 'ring') return el('div', { style: { width: '14px', height: '14px', borderRadius: '50%', background: 'conic-gradient(' + tok.accent + ' 0 81%, ' + tok.track + ' 0)' } });
+    if (id === 'naked') return el('div', { style: { display: 'flex', flexDirection: 'column', gap: '2px', width: '26px' } },
+      el('div', { key: 1, style: { height: '2.5px', borderRadius: '1px', background: tok.neutral, width: '62%' } }),
+      el('div', { key: 2, style: { height: '2.5px', borderRadius: '1px', background: tok.accent, width: '81%' } }),
+      el('div', { key: 3, style: { height: '2.5px', borderRadius: '1px', background: tok.neutral, width: '24%' } }));
+    if (id === 'dot') return el('div', { style: { width: '8px', height: '8px', borderRadius: '50%', background: tok.accent } });
+    if (id === 'countdown') return el('span', { style: { fontFamily: "'JetBrains Mono', monospace", fontSize: '8.5px', fontWeight: 700, color: tok.accent } }, '1h 48m');
+    if (id === 'battery') return el('div', { style: { display: 'flex', alignItems: 'center', gap: '1px' } },
+      el('div', { key: 1, style: { width: '18px', height: '9px', border: '1px solid ' + tok.neutral, borderRadius: '2px', padding: '1px', boxSizing: 'border-box' } },
+        el('div', { style: { width: '19%', height: '100%', background: tok.accent } })),
+      el('div', { key: 2, style: { width: '2px', height: '4px', background: tok.neutral } }));
+    if (id === 'spark') return el('svg', { viewBox: '0 0 28 12', style: { width: '28px', height: '12px', display: 'block' } },
+      el('polyline', { points: '0,10 4,7 8,9 12,5 16,7 20,2 24,5 28,3', fill: 'none', stroke: tok.accent, strokeWidth: 1.5 }));
+    const segs = [];
+    for (let i = 0; i < 8; i++) segs.push(el('div', { key: i, style: { width: '2.5px', height: '8px', background: i < 6 ? tok.accent : tok.track } }));
+    return el('div', { style: { display: 'flex', gap: '1.5px' } }, ...segs);
+  }
+
+  skinChipEl(id) {
+    const el = React.createElement;
+    const sk = this.skins[id];
+    return el('div', { style: { display: 'inline-flex', alignItems: 'center', padding: '3px 5px', borderRadius: sk.radius >= 999 ? '999px' : (sk.radius + 2) + 'px', background: sk.bg, border: '1px solid ' + sk.border } },
+      el('div', { style: { position: 'relative', width: '10px', height: '10px', borderRadius: '50%', background: 'conic-gradient(' + sk.accent + ' 0 81%, ' + sk.track + ' 0)' } },
+        el('div', { style: { position: 'absolute', inset: '2px', borderRadius: '50%', background: sk.hole } })));
+  }
+
+  makeThemeCards(v, kind) {
+    const el = React.createElement;
+    const tok = this.panelTok[v];
+    const items = kind === 'style'
+      ? [['ring', 'Ring pill', true], ['naked', 'Naked bars'], ['dot', 'Status dot'], ['countdown', 'Countdown'], ['battery', 'Battery'], ['spark', 'Sparkline'], ['segments', 'Segments']]
+      : [['glass', 'Glass', true], ['amber', 'Amber HUD'], ['ledger', 'Warm Ledger'], ['midnight', 'Midnight OLED'], ['paper', 'Paper'], ['synth', 'Synthwave']];
+    return el('div', { style: { display: 'contents' } },
+      items.map(([id, name, free]) =>
+        el('div', {
+          key: id,
+          style: {
+            borderRadius: '10px', padding: '7px 3px 6px', textAlign: 'center',
+            border: '1px solid ' + (free ? tok.accent : tok.lockedBorder),
+            background: free ? tok.accentTint : tok.lockedBg,
+            opacity: free ? 1 : 0.55,
+          },
+        },
+          el('div', { key: 'p', style: { height: '20px', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '4px' } },
+            kind === 'style' ? this.stylePreviewEl(id, tok) : this.skinChipEl(id)),
+          el('div', { key: 'c', style: { fontSize: '9.5px', lineHeight: 1.3 } },
+            free ? [name + ' ', el('b', { key: 'f', style: { color: tok.accentText } }, '✓')] : '🔒 ' + name))
+      ));
+  }
+
+  themes = {
+    a: {
+      base: { padding: '5px 8px', whiteSpace: 'nowrap', borderRadius: '8px', cursor: 'pointer', fontSize: '12px', flex: '1 1 auto', textAlign: 'center', transition: 'all 0.15s' },
+      active: { background: 'rgba(255,143,107,0.16)', color: '#FF8F6B', fontWeight: 600 },
+      inactive: { color: 'rgba(255,255,255,0.5)' },
+      dotOn: '#FF8F6B', dotOff: 'rgba(255,255,255,0.2)',
+    },
+    d: {
+      base: { padding: '5px 8px', whiteSpace: 'nowrap', borderRadius: '8px', cursor: 'pointer', fontSize: '12px', flex: '1 1 auto', textAlign: 'center', transition: 'all 0.15s' },
+      active: { background: 'rgba(224,106,67,0.13)', color: '#D45A33', fontWeight: 600 },
+      inactive: { color: 'rgba(28,30,38,0.5)' },
+      dotOn: '#D45A33', dotOff: 'rgba(28,30,38,0.15)',
+    },
+  };
+
+  tabLabels = { limits: 'Usage limits', history: 'History', edit: 'Edit', theme: '🔒 Theme' };
+  pageTitles = ['14-day usage', 'SDK $ by app'];
+
+  makeTabBar(v) {
+    const st = this.state[v];
+    const th = this.themes[v];
+    return React.createElement(
+      'div',
+      { style: { display: 'contents' } },
+      ['limits', 'history', 'edit', 'theme'].map(tab =>
+        React.createElement(
+          'span',
+          {
+            key: tab,
+            onClick: () => this.setState(s => ({ [v]: { ...s[v], tab } })),
+            style: { ...th.base, ...(st.tab === tab ? th.active : th.inactive) },
+          },
+          this.tabLabels[tab]
+        )
+      )
+    );
+  }
+
+  makeDots(v) {
+    const st = this.state[v];
+    const th = this.themes[v];
+    const dotBase = { width: '6px', height: '6px', borderRadius: '50%', cursor: 'pointer', transition: 'background 0.15s' };
+    return React.createElement(
+      'div',
+      { style: { display: 'contents' } },
+      [0, 1].map(p =>
+        React.createElement('div', {
+          key: p,
+          onClick: () => this.setState(s => ({ [v]: { ...s[v], page: p } })),
+          style: { ...dotBase, background: st.page === p ? th.dotOn : th.dotOff },
+        })
+      )
+    );
+  }
+
+  renderVals() {
+    const vals = {};
+    for (const v of ['a', 'd']) {
+      const U = v.toUpperCase();
+      const st = this.state[v];
+      for (const tab of ['limits', 'history', 'edit', 'theme']) {
+        const T = tab.charAt(0).toUpperCase() + tab.slice(1);
+        vals['show' + T + U] = st.tab === tab;
+      }
+      vals['next' + U] = () => this.setState(s => ({ [v]: { ...s[v], page: s[v].page === 0 ? 1 : 0 } }));
+      vals['prev' + U] = () => this.setState(s => ({ [v]: { ...s[v], page: s[v].page === 0 ? 1 : 0 } }));
+      vals['pageGraph' + U] = st.page === 0;
+      vals['pageApps' + U] = st.page === 1;
+      vals['pageTitle' + U] = this.pageTitles[st.page];
+      vals['tabBar' + U] = this.makeTabBar(v);
+      vals['dots' + U] = this.makeDots(v);
+      vals['themeStyleCards' + U] = this.makeThemeCards(v, 'style');
+      vals['themeSkinCards' + U] = this.makeThemeCards(v, 'skin');
+    }
+    vals.demoStyleCards = this.makeDemoCards('style');
+    vals.demoSkinCards = this.makeDemoCards('skin');
+    vals.demoPill = this.makeDemoPill();
+    vals.demoCaption = this.skins[this.state.demo.skin].name + ' · ' + this.styleNames[this.state.demo.style];
+    return vals;
+  }
+}
+</script>
+</body>
+</html>
