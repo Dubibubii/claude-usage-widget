@@ -29,7 +29,9 @@ export function Numeral({ meter, color }: { meter: MeterReading | null; color: s
   if (!meter) return null;
   return (
     <span className="mono" style={{ fontSize: 13, fontWeight: 600, color }}>
-      {meter.pct === null ? "–" : `${Math.round(meter.pct)}%`}
+      {/* awaiting sync shows 0% (user call: calmer than a dash; the card/
+          tooltip copy still says it's out of date) */}
+      {`${Math.round(meter.pct ?? 0)}%`}
     </span>
   );
 }

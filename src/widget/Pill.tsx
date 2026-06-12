@@ -84,19 +84,9 @@ function RingContent({ args }: { args: PaidStyleArgs }) {
     <>
       {shown.map((r) => (
         <div key={r.id} className="ring-slot" style={{ width: 20 }}>
-          {r.pct === null ? (
-            // awaiting first statusline sync — dashed placeholder ring
-            <div
-              style={{
-                width: 20,
-                height: 20,
-                borderRadius: "50%",
-                border: `1.5px dashed ${t.lightSurface ? "rgba(28,30,38,0.3)" : "rgba(255,255,255,0.3)"}`,
-              }}
-            />
-          ) : (
-            <Ring pct={r.pct} color={heatColor(r.pct, t)} glow={heatGlow(r.pct, t)} t={t} />
-          )}
+          {/* awaiting sync renders as an empty ring at 0 — calmer than the
+              old dashed placeholder; the meta copy carries the honesty */}
+          <Ring pct={r.pct ?? 0} color={heatColor(r.pct ?? 0, t)} glow={heatGlow(r.pct, t)} t={t} />
         </div>
       ))}
       <Numeral meter={meter} color={numeralColor} />

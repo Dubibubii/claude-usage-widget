@@ -91,7 +91,7 @@ function Card({ id, t, usage, now }: { id: MeterId; t: Tokens; usage: UsageSnaps
         <div style={surface}>
           {label("5-hr session")}
           <div className="mono" style={valueStyle}>
-            {usage.session5h ? Math.round(usage.session5h.pct) : "–"}
+            {usage.session5h ? Math.round(usage.session5h.pct) : 0}
             <span style={suffixStyle}>%</span>
           </div>
           {bar(r.pct)}
@@ -105,7 +105,7 @@ function Card({ id, t, usage, now }: { id: MeterId; t: Tokens; usage: UsageSnaps
         <div style={surface}>
           {label("Weekly · all")}
           <div className="mono" style={valueStyle}>
-            {usage.weeklyAll ? Math.round(usage.weeklyAll.pct) : "–"}
+            {usage.weeklyAll ? Math.round(usage.weeklyAll.pct) : 0}
             <span style={suffixStyle}>%</span>
           </div>
           {bar(r.pct)}
