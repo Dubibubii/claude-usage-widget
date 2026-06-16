@@ -3,7 +3,6 @@ import { useStore } from "../state/store";
 import type { Tokens } from "../theme/tokens";
 import type { TabId, UsageSnapshot } from "../state/types";
 import { agoLabel, minutesAgo } from "../data/format";
-import { cycleDay } from "../data/insights";
 import { exportLog, logMeta, LOG_FILENAME, type LogMeta } from "../export/usageLog";
 import { LimitsTab } from "./tabs/LimitsTab";
 import { HistoryTab } from "./tabs/HistoryTab";
@@ -141,9 +140,6 @@ function Footer({ t, usage, now }: { t: Tokens; usage: UsageSnapshot; now: Date 
   const synced = usage.sync.rateLimits;
   const syncAge = synced ? minutesAgo(synced, now) : null;
   const stale = syncAge !== null && syncAge > 15;
-  const cycle = usage.sdkCredits
-    ? cycleDay(usage.sdkCredits.sinceOn, usage.sdkCredits.restartsOn, now)
-    : null;
   const [meta, setMeta] = useState<LogMeta | null>(null);
   useEffect(() => {
     logMeta().then(setMeta);
@@ -175,15 +171,6 @@ function Footer({ t, usage, now }: { t: Tokens; usage: UsageSnapshot; now: Date 
       >
         ⤓ Export <span className="mono">.md</span>
       </span>
-      {cycle && (
-        // where am I in the SDK billing month, at a glance
-        <span
-          className="mono"
-          style={{ fontSize: 10, color: t.lightSurface ? "rgba(28,30,38,0.35)" : "rgba(255,255,255,0.3)" }}
-        >
-          day {cycle.day}/{cycle.total}
-        </span>
-      )}
       {synced === null ? (
         // statusline registered but no capture written yet
         <span className="mono" style={{ fontSize: 10, color: t.accentText }}>

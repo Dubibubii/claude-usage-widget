@@ -143,15 +143,6 @@ function Tooltip({
               <>Weekly {syncing}</>
             ),
           };
-        case "sdkCredits":
-          return {
-            hot: r.hot,
-            text: usage.sdkCredits ? (
-              <>Agent SDK <b className="mono">${usage.sdkCredits.spentUsd.toFixed(2)}</b> est. · counts toward limits</>
-            ) : (
-              <>Agent SDK {syncing}</>
-            ),
-          };
         case "allTimeTokens":
           return {
             hot: false,

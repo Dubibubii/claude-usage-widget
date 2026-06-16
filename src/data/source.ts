@@ -13,7 +13,6 @@
 // Tauri shell performs the same reads natively (src/platform/fs.ts).
 
 import type { SetupState, UsageSnapshot } from "../state/types";
-import { PLAN_SDK_POOL } from "../state/types";
 import { scanLocalUsage, type LocalUsage } from "./scanCore";
 import { cacheReadPct14d, heavyProject14d, localDayKey, weeklyTrendPerDay } from "./insights";
 import { isTauri, nativeFs, nativeReadCapture } from "../platform/native";
@@ -283,24 +282,14 @@ export function assembleSnapshot(
   local: LocalUsage | null,
 ): UsageSnapshot {
   const now = new Date();
-  const pool = PLAN_SDK_POOL[setup.plan];
   return {
     session5h: openWindow(live?.fiveHour, now),
     weeklyAll: openWindow(live?.sevenDay, now),
-    sdkCredits: local
-      ? {
-          spentUsd: local.sdkCycle.spentUsd,
-          poolUsd: pool,
-          sinceOn: local.sdkCycle.cycleStart,
-          restartsOn: nextCycleRestart(setup, now).toISOString(),
-        }
-      : null,
     allTimeTokens: local
       ? { total: local.allTime.tokens, since: local.allTime.since }
       : null,
     history14d: history14d(),
     dailyActivity: dailyActivity14d(local, now),
-    sdkByApp: local?.sdkCycle.byApp ?? [],
     cache14dPct: local ? cacheReadPct14d(local.days, now) : null,
     heavyProject: local ? heavyProject14d(local.days, now) : null,
     weeklyTrendPerDay: weeklyTrendPerDay(dailyPeaks(), now),

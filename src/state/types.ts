@@ -3,7 +3,6 @@
 export type MeterId =
   | "session5h"
   | "weeklyAll"
-  | "sdkCredits"
   | "allTimeTokens"
   | "opusVsSonnet";
 
@@ -41,13 +40,11 @@ export interface UsageSnapshot {
   /** null until the first statusline capture exists ("awaiting sync") */
   session5h: { pct: number; resetsAt: string } | null;
   weeklyAll: { pct: number; resetsAt: string } | null;
-  sdkCredits: { spentUsd: number; poolUsd: number; sinceOn: string; restartsOn: string } | null;
   allTimeTokens: { total: number; since: string | null } | null;
   history14d: { date: string; peakWeeklyPct: number }[];
   /** last 14 days of transcript-derived activity (always populated once the
    * local scan ran — gives History real data on first launch) */
   dailyActivity: { date: string; totalTokens: number; costUsd: number }[];
-  sdkByApp: { app: string; usd: number }[];
   /** derived insights (insights.ts) — null when not enough data */
   cache14dPct: number | null;
   heavyProject: { name: string; pct: number } | null;
@@ -96,19 +93,8 @@ export interface WidgetState {
 export const METER_LABELS: Record<MeterId, string> = {
   session5h: "5-hr session",
   weeklyAll: "Weekly · all models",
-  sdkCredits: "Agent SDK",
   allTimeTokens: "All-time tokens",
   opusVsSonnet: "Opus vs Sonnet",
-};
-
-/** The separate Agent SDK credit amounts Anthropic announced (May 2026) then
- * PAUSED on the June 15 launch day. SDK usage currently counts toward the
- * normal subscription limits, so these are NOT a live budget — kept only as
- * the API-equivalent reference figure if the plan ever ships. */
-export const PLAN_SDK_POOL: Record<PlanId, number> = {
-  pro: 10,
-  max5x: 50,
-  max20x: 200,
 };
 
 export const HOT_THRESHOLD = 75; // isHot(m) = pct >= 75

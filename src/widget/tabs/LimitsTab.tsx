@@ -114,30 +114,6 @@ function Card({ id, t, usage, now }: { id: MeterId; t: Tokens; usage: UsageSnaps
           </div>
         </div>
       );
-    case "sdkCredits": {
-      // No separate pool anymore — Anthropic paused the SDK credit plan, so
-      // this usage counts toward the 5h + weekly limits. Show it as honest
-      // API-equivalent spend (no budget bar, no /pool, no pace-to-empty).
-      const sdk = usage.sdkCredits;
-      return (
-        <div style={surface}>
-          {label("Agent SDK")}
-          <div className="mono" style={valueStyle}>
-            {sdk ? (
-              <>
-                ${sdk.spentUsd < 10 ? sdk.spentUsd.toFixed(2) : Math.round(sdk.spentUsd)}
-                <span style={suffixStyle}> est.</span>
-              </>
-            ) : (
-              "–"
-            )}
-          </div>
-          <div style={{ ...metaStyle, marginTop: 14 }}>
-            {sdk ? "this cycle · counts toward your limits" : "reading local data…"}
-          </div>
-        </div>
-      );
-    }
     case "allTimeTokens": {
       const at = usage.allTimeTokens;
       return (

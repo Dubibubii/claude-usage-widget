@@ -10,12 +10,12 @@ describe("migrateMeters — legacy rows WITHOUT pins", () => {
     const rows = [
       { id: "session5h", enabled: true, pinnedToPill: false },
       { id: "weeklyAll", enabled: true, pinnedToPill: false },
-      { id: "sdkCredits", enabled: true, pinnedToPill: false },
+      { id: "allTimeTokens", enabled: true, pinnedToPill: false },
     ];
     expect(migrateMeters(rows)).toEqual([
       { id: "session5h", enabled: true },
       { id: "weeklyAll", enabled: false },
-      { id: "sdkCredits", enabled: false },
+      { id: "allTimeTokens", enabled: false },
     ]);
   });
 
@@ -38,23 +38,23 @@ describe("migrateMeters — legacy rows WITH pins: pins win", () => {
     const rows = [
       { id: "session5h", enabled: true, pinnedToPill: false },
       { id: "weeklyAll", enabled: false, pinnedToPill: true },
-      { id: "sdkCredits", enabled: true, pinnedToPill: true },
+      { id: "allTimeTokens", enabled: true, pinnedToPill: true },
     ];
     expect(migrateMeters(rows)).toEqual([
       { id: "session5h", enabled: false },
       { id: "weeklyAll", enabled: true },
-      { id: "sdkCredits", enabled: true },
+      { id: "allTimeTokens", enabled: true },
     ]);
   });
 
   test("a single pin beats an enabled first %-meter", () => {
     const rows = [
       { id: "session5h", enabled: true, pinnedToPill: false },
-      { id: "sdkCredits", enabled: true, pinnedToPill: true },
+      { id: "allTimeTokens", enabled: true, pinnedToPill: true },
     ];
     expect(migrateMeters(rows)).toEqual([
       { id: "session5h", enabled: false },
-      { id: "sdkCredits", enabled: true },
+      { id: "allTimeTokens", enabled: true },
     ]);
   });
 });
@@ -64,7 +64,7 @@ describe("migrateMeters — modern rows pass through", () => {
     const rows = [
       { id: "session5h", enabled: true },
       { id: "weeklyAll", enabled: false },
-      { id: "sdkCredits", enabled: true },
+      { id: "allTimeTokens", enabled: true },
     ];
     expect(migrateMeters(rows)).toEqual(rows);
   });
@@ -88,5 +88,23 @@ describe("migrateMeters — empty / garbage → null (caller falls back to defau
   });
   test("array of id-less junk → null", () => {
     expect(migrateMeters([{}, { enabled: true }, { id: 7 }])).toBeNull();
+  });
+});
+
+describe("migrateMeters — removed meter ids are dropped", () => {
+  test("a persisted sdkCredits row (removed in this build) is filtered out", () => {
+    const rows = [
+      { id: "session5h", enabled: true },
+      { id: "sdkCredits", enabled: true },
+      { id: "weeklyAll", enabled: false },
+    ];
+    expect(migrateMeters(rows)).toEqual([
+      { id: "session5h", enabled: true },
+      { id: "weeklyAll", enabled: false },
+    ]);
+  });
+
+  test("a row list of only-removed ids → null (caller falls back to defaults)", () => {
+    expect(migrateMeters([{ id: "sdkCredits", enabled: true }])).toBeNull();
   });
 });

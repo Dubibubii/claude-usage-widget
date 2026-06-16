@@ -102,28 +102,19 @@ describe("buildMonthlyReport — current month only", () => {
     expect(report).not.toContain("undefined");
   });
 
-  test("day with sdk.tokens=0 omits the agent-sdk line; the other day has it", () => {
-    const matches = report.match(/- agent-sdk: /g) ?? [];
-    expect(matches).toHaveLength(1);
-    // the single agent-sdk line lives inside the 2026-06-03 block
-    const block03 = report.slice(report.indexOf("### 2026-06-03"));
-    expect(block03).toContain("- agent-sdk: 250K tokens (~$0.25 est. · counts toward subscription limits)");
-    const block10 = report.slice(
-      report.indexOf("### 2026-06-10"),
-      report.indexOf("### 2026-06-03"),
-    );
-    expect(block10).not.toContain("agent-sdk:");
+  test("Agent SDK cost is no longer reported anywhere (feature removed)", () => {
+    expect(report).not.toContain("agent-sdk");
+    expect(report).not.toContain("Agent SDK");
   });
 
   test("observed peaks from localStorage land on their day", () => {
     expect(report).toContain("- limits: 5h-session peak 87% · weekly peak 42%");
   });
 
-  test("header reframes SDK as counting toward subscription limits (pool paused)", () => {
+  test("header carries plan + month name, no SDK pool line", () => {
     expect(report).toContain("# Claude usage report — June 2026");
-    expect(report).toContain("Plan: Max 20x");
-    expect(report).toContain("counts toward your subscription limits");
-    expect(report).not.toContain("Agent SDK pool $200/mo");
+    expect(report).toContain("- Plan: Max 20x");
+    expect(report).not.toContain("Agent SDK pool");
   });
 });
 

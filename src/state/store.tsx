@@ -8,7 +8,6 @@ import {
 } from "react";
 import {
   HOT_THRESHOLD,
-  PLAN_SDK_POOL,
   type Corner,
   type MeterId,
   type MeterRow,
@@ -20,6 +19,15 @@ import {
   type WidgetStyle,
 } from "./types";
 
+/** All meter ids the current build understands — used to drop stale rows
+ * (e.g. the removed "sdkCredits") from persisted state on load. */
+const KNOWN_METERS: ReadonlySet<string> = new Set([
+  "session5h",
+  "weeklyAll",
+  "allTimeTokens",
+  "opusVsSonnet",
+]);
+
 const STORAGE_KEY = "cuw-state-v1";
 
 const defaultState: WidgetState = {
@@ -28,7 +36,6 @@ const defaultState: WidgetState = {
   meters: [
     { id: "session5h", enabled: true },
     { id: "weeklyAll", enabled: false },
-    { id: "sdkCredits", enabled: false },
   ],
   setup: {
     plan: "max5x",
@@ -132,7 +139,8 @@ export function migrateMeters(rows: unknown): WidgetState["meters"] | null {
   if (!Array.isArray(rows) || rows.length === 0) return null;
   const meters = rows
     .filter((r): r is { id: MeterId; enabled?: boolean; pinnedToPill?: boolean } =>
-      !!r && typeof (r as { id?: unknown }).id === "string")
+      !!r && typeof (r as { id?: unknown }).id === "string" &&
+      KNOWN_METERS.has((r as { id: string }).id)) // drops removed ids (e.g. sdkCredits)
     .map((r) => ({ id: r.id, enabled: r.enabled !== false, legacyPin: r.pinnedToPill === true }));
   if (meters.length === 0) return null;
   const isLegacy = rows.some((r) => typeof (r as { pinnedToPill?: unknown }).pinnedToPill === "boolean");
@@ -211,7 +219,6 @@ export function meterPct(id: MeterId, usage: UsageSnapshot): number | null {
       return usage.session5h?.pct ?? null;
     case "weeklyAll":
       return usage.weeklyAll?.pct ?? null;
-    // sdkCredits has no pool % — it's informational $ now (see PCT_METERS note)
     default:
       return null;
   }
@@ -240,6 +247,3 @@ export function primaryOf(readings: MeterReading[]): MeterReading | null {
   return readings[0] ?? null;
 }
 
-export function sdkPoolForPlan(setup: SetupState): number {
-  return PLAN_SDK_POOL[setup.plan];
-}

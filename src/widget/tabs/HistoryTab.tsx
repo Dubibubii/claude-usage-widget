@@ -1,32 +1,16 @@
-import { useRef } from "react";
-import { useStore } from "../../state/store";
 import type { Tokens } from "../../theme/tokens";
 import type { UsageSnapshot } from "../../state/types";
-import { fmtTokens, fmtUsd, shortDate } from "../../data/format";
+import { fmtTokens, shortDate } from "../../data/format";
 
 /** "YYYY-MM-DD" → display, pinned to local noon so the label never shifts a day */
 const dayLabel = (key: string) => shortDate(`${key}T12:00:00`);
 
-/** History: 2-page carousel — 14-day chart ⇄ SDK $ by app (spec §4).
- * Navigation: dots + trackpad swipe. The spec's ‹ › header arrows were cut —
- * three affordances for a two-page carousel (audit verdict). */
+/** History: 14-day token chart with weekly-peak overlay + cache/heavy stats.
+ * (The "SDK $ by app" carousel page was removed with Agent SDK cost tracking
+ * — SDK usage now counts toward the normal limits.) */
 export function HistoryTab({ t, usage }: { t: Tokens; usage: UsageSnapshot }) {
-  const { state, dispatch } = useStore();
-  const page = state.ui.historyPage;
-  const setPage = (p: 0 | 1) => dispatch({ type: "setHistoryPage", page: p });
-
-  // horizontal trackpad swipe
-  const wheelAcc = useRef(0);
-  const onWheel = (e: React.WheelEvent) => {
-    wheelAcc.current += e.deltaX;
-    if (Math.abs(wheelAcc.current) > 60) {
-      setPage(wheelAcc.current > 0 ? 1 : 0);
-      wheelAcc.current = 0;
-    }
-  };
-
   return (
-    <div onWheel={onWheel}>
+    <div>
       <div
         style={{
           textAlign: "center",
@@ -37,41 +21,9 @@ export function HistoryTab({ t, usage }: { t: Tokens; usage: UsageSnapshot }) {
           marginBottom: 10,
         }}
       >
-        {page === 0 ? "14-day usage" : "SDK $ by app"}
+        14-day usage
       </div>
-
-      <div style={{ overflow: "hidden" }}>
-        <div className="carousel-track" style={{ transform: `translateX(${page === 0 ? "0" : "-50%"})` }}>
-          <div className="carousel-page" style={{ paddingRight: 1 }}>
-            <ChartPage t={t} usage={usage} />
-          </div>
-          <div className="carousel-page" style={{ paddingLeft: 1 }}>
-            <AppsPage t={t} usage={usage} />
-          </div>
-        </div>
-      </div>
-
-      {/* dots: 6px, gap 6, active = accent, clickable */}
-      <div style={{ display: "flex", justifyContent: "center", gap: 6, marginTop: 12 }}>
-        {[0, 1].map((p) => (
-          <div
-            key={p}
-            onClick={() => setPage(p as 0 | 1)}
-            style={{
-              width: 6,
-              height: 6,
-              borderRadius: "50%",
-              cursor: "pointer",
-              background:
-                page === p
-                  ? t.accent
-                  : t.lightSurface
-                    ? "rgba(28,30,38,0.15)"
-                    : "rgba(255,255,255,0.2)",
-            }}
-          />
-        ))}
-      </div>
+      <ChartPage t={t} usage={usage} />
     </div>
   );
 }
@@ -184,71 +136,6 @@ function ChartPage({ t, usage }: { t: Tokens; usage: UsageSnapshot }) {
         </div>
       )}
     </>
-  );
-}
-
-function AppsPage({ t, usage }: { t: Tokens; usage: UsageSnapshot }) {
-  // "Other apps" aggregate always sits last (spec §4 p2)
-  const named = usage.sdkByApp.filter((r) => r.app !== "Other apps").sort((a, b) => b.usd - a.usd);
-  const other = usage.sdkByApp.filter((r) => r.app === "Other apps");
-  const rows = [...named, ...other];
-  const total = rows.reduce((s, r) => s + r.usd, 0);
-  const colors = [t.accent, t.neutral, t.green]; // >3 apps: extras neutral
-
-  if (rows.length === 0) {
-    return (
-      <EmptyCard t={t}>
-        {usage.sync.localScan
-          ? "no SDK usage this cycle"
-          : "reading local data…"}
-      </EmptyCard>
-    );
-  }
-
-  return (
-    <div
-      style={{
-        borderRadius: 12,
-        background: t.lightSurface ? t.cardBg : "rgba(255,255,255,0.04)",
-        border: `1px solid ${t.cardBorder}`,
-        padding: 13,
-        display: "flex",
-        flexDirection: "column",
-        gap: 12,
-      }}
-    >
-      {rows.map((r, i) => (
-        <div key={r.app}>
-          <div style={{ display: "flex", justifyContent: "space-between", fontSize: 12 }}>
-            <span>{r.app}</span>
-            <b className="mono">${r.usd.toFixed(2)}</b>
-          </div>
-          <div className="bar-track" style={{ background: t.track, marginTop: 5 }}>
-            <div
-              className="bar-fill"
-              style={{ width: `${(r.usd / total) * 100}%`, background: colors[i] ?? t.neutral }}
-            />
-          </div>
-        </div>
-      ))}
-      <div
-        style={{
-          borderTop: `1px solid ${t.footerBorder}`,
-          paddingTop: 9,
-          display: "flex",
-          justifyContent: "space-between",
-          fontSize: 11,
-          color: t.textSecondary,
-        }}
-      >
-        <span>this cycle</span>
-        <b className="mono" style={{ color: t.textPrimary }}>
-          {usage.sdkCredits
-            ? `$${usage.sdkCredits.spentUsd.toFixed(2)} / ${fmtUsd(usage.sdkCredits.poolUsd)}`
-            : "–"}
-        </b>
-      </div>
-    </div>
   );
 }
 
