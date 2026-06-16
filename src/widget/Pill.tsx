@@ -6,7 +6,7 @@ import {
   type WidgetStyle,
 } from "../state/types";
 import { pillMeters, primaryOf, readMeter, type MeterReading } from "../state/store";
-import { agoLabel, fmtDuration, fmtTokens, minutesAgo, sdkRestartMeta, weeklyResetTooltip } from "../data/format";
+import { agoLabel, fmtDuration, fmtTokens, minutesAgo, weeklyResetTooltip } from "../data/format";
 import { Ring } from "./Ring";
 import { heatColor, heatGlow, Numeral } from "./meterVisuals";
 import type { PaidModule, PaidStyleArgs } from "../theme/paidContent";
@@ -147,9 +147,9 @@ function Tooltip({
           return {
             hot: r.hot,
             text: usage.sdkCredits ? (
-              <>SDK <b className="mono">${usage.sdkCredits.spentUsd.toFixed(2)}/${usage.sdkCredits.poolUsd}</b> · {sdkRestartMeta(usage.sdkCredits.restartsOn)}</>
+              <>Agent SDK <b className="mono">${usage.sdkCredits.spentUsd.toFixed(2)}</b> est. · counts toward limits</>
             ) : (
-              <>SDK {syncing}</>
+              <>Agent SDK {syncing}</>
             ),
           };
         case "allTimeTokens":

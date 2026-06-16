@@ -4,13 +4,10 @@ import type { Tokens } from "../../theme/tokens";
 import type { MeterId, UsageSnapshot } from "../../state/types";
 import {
   fmtTokens,
-  sdkCycleMeta,
   sessionResetMeta,
-  shortDate,
   sinceMeta,
   weeklyResetMeta,
 } from "../../data/format";
-import { sdkPaceEmptyOn } from "../../data/insights";
 
 /** Usage limits (default tab): 2×2 grid, gap 9. Cards in meters order;
  * if only 3 cards the 4th cell stays empty (spec §3). */
@@ -118,38 +115,26 @@ function Card({ id, t, usage, now }: { id: MeterId; t: Tokens; usage: UsageSnaps
         </div>
       );
     case "sdkCredits": {
+      // No separate pool anymore — Anthropic paused the SDK credit plan, so
+      // this usage counts toward the 5h + weekly limits. Show it as honest
+      // API-equivalent spend (no budget bar, no /pool, no pace-to-empty).
       const sdk = usage.sdkCredits;
-      // pace alert beats the window line when the pool projects to run dry
-      // before its restart (needs ≥1 day of cycle data; insights.ts)
-      const emptyOn = sdk
-        ? sdkPaceEmptyOn(sdk.spentUsd, sdk.poolUsd, sdk.sinceOn, sdk.restartsOn, now)
-        : null;
       return (
         <div style={surface}>
-          {label("SDK credits")}
+          {label("Agent SDK")}
           <div className="mono" style={valueStyle}>
             {sdk ? (
               <>
                 ${sdk.spentUsd < 10 ? sdk.spentUsd.toFixed(2) : Math.round(sdk.spentUsd)}
-                <span style={suffixStyle}>/{sdk.poolUsd}</span>
+                <span style={suffixStyle}> est.</span>
               </>
             ) : (
               "–"
             )}
           </div>
-          {bar(r.pct)}
-          {/* "est." — API-equivalent estimate until calibrated against real
-           * Anthropic SDK metering; the window start is shown so a wrong
-           * cycle day is self-evident (fix via Edit → ⚙ Re-run setup) */}
-          {emptyOn ? (
-            <div style={{ ...metaStyle, color: t.accentText }}>
-              est. · ~empty {shortDate(emptyOn.toISOString())} at this pace
-            </div>
-          ) : (
-            <div style={metaStyle}>
-              {sdk ? `est. · ${sdkCycleMeta(sdk.sinceOn, sdk.restartsOn)}` : "reading local data…"}
-            </div>
-          )}
+          <div style={{ ...metaStyle, marginTop: 14 }}>
+            {sdk ? "this cycle · counts toward your limits" : "reading local data…"}
+          </div>
         </div>
       );
     }

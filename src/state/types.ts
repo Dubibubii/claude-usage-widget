@@ -96,12 +96,15 @@ export interface WidgetState {
 export const METER_LABELS: Record<MeterId, string> = {
   session5h: "5-hr session",
   weeklyAll: "Weekly · all models",
-  sdkCredits: "Agent SDK credits",
+  sdkCredits: "Agent SDK",
   allTimeTokens: "All-time tokens",
   opusVsSonnet: "Opus vs Sonnet",
 };
 
-// Placeholder mapping per spec §4 — confirm against Anthropic's published plan credits at build time.
+/** The separate Agent SDK credit amounts Anthropic announced (May 2026) then
+ * PAUSED on the June 15 launch day. SDK usage currently counts toward the
+ * normal subscription limits, so these are NOT a live budget — kept only as
+ * the API-equivalent reference figure if the plan ever ships. */
 export const PLAN_SDK_POOL: Record<PlanId, number> = {
   pro: 10,
   max5x: 50,

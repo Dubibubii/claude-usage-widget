@@ -118,7 +118,7 @@ export function SetupCard({ t, onDone }: { t: Tokens; onDone: () => void }) {
         </label>
       </div>
       <div style={{ fontSize: 11, color: withAlpha(t.textPrimary, 0.35), marginBottom: 14 }}>
-        sets when your SDK credits reset (upgraded plans usually reset on the upgrade day)
+        the monthly window for your Agent SDK spend totals (upgraded plans usually reset on the upgrade day)
       </div>
 
       <div style={groupLabel}>Weekly limit resets</div>

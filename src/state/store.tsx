@@ -195,11 +195,14 @@ export interface MeterReading {
   hot: boolean;
 }
 
-/** Meters that represent a limit % (all-time tokens never does). */
+/** Meters that fill a ring with a limit %. Agent SDK is NOT one anymore:
+ * Anthropic paused the separate SDK credit pool (announced May 2026, paused
+ * on its June 15 launch day), so SDK usage counts toward the normal 5h +
+ * weekly limits — there is no separate budget to show a % against. The SDK
+ * card is now informational $ spend (like all-time tokens). */
 export const PCT_METERS: ReadonlySet<MeterId> = new Set([
   "session5h",
   "weeklyAll",
-  "sdkCredits",
 ]);
 
 export function meterPct(id: MeterId, usage: UsageSnapshot): number | null {
@@ -208,10 +211,7 @@ export function meterPct(id: MeterId, usage: UsageSnapshot): number | null {
       return usage.session5h?.pct ?? null;
     case "weeklyAll":
       return usage.weeklyAll?.pct ?? null;
-    case "sdkCredits":
-      return usage.sdkCredits
-        ? (usage.sdkCredits.spentUsd / usage.sdkCredits.poolUsd) * 100
-        : null;
+    // sdkCredits has no pool % — it's informational $ now (see PCT_METERS note)
     default:
       return null;
   }
